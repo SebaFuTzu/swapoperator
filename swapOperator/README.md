@@ -1,0 +1,31 @@
+# swapoperator
+
+Optimización de asignación cuadrática con el operador swap
+
+Como ejecutar el proyecto:
+
+ejecutar desde la línea de comandos de la siguiente forma (JAR adjunto en carpeta "jar"):
+
+java -jar ayudantia1metaheuristicas.jar -path [Ruta] [matriz funciones] [matriz distancias] [swaps] [ejercicio]
+
+[Ruta] es la ruta donde están los txt de datos. Por ejemplo: "C:/Universidad/USACH/2018-1/Optimización en Ingeniería/Ayudantía/Metaheurísticas/Ayudantía 1/Datos/"
+
+[matriz funciones] es el nombre del txt con la matriz de funciones, por ejemplo: F64.txt
+
+[matriz distancias] es el nombre del txt con la matriz de distancias, por ejemplo: D64.txt
+
+[swaps] numero de swaps, por ejemplo (no he probado con más): 2
+
+[ejercicio] es uno de los 3 ejercicios que aparecen en el pdf de asignación cuadrática de la ayudantía, por ejemplo:
+ejercicio1
+ejercicio2
+ejercicio3
+
+También pueden ejecutarlo desde eclipse agregando estos argumentos en el "Run configuration", ejemplo:
+
+-path "C:/Universidad/USACH/2018-1/Optimización en Ingeniería/Ayudantía/Metaheurísticas/Ayudantía 1/Datos/" F128.txt D128.txt 2 ejercicio3
+
+Adjunto datos en carpeta "datos"
+ejercicio1: buscar 1 solución mejor que la inicial generada aleatoriamente, o hasta alcanzar el 50% de la vecindad
+ejecicio2: generar el 30% de la vecindad y luego buscar el mejor resultado, a partir de una solución inicial generada aleatoriamente
+ejercico3: generar el 100% de la vecindad y luego buscar el mejor resultado, a partir de una solución inicial generada aleatoriamente
