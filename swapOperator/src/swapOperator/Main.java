@@ -98,9 +98,9 @@ public class Main {
 				}else if(args[5].equals("SA")) {
 					System.out.println("######## Simulated Annealing ########");
 					double temperaturaMinima = 0;
-					double temperaturaMaxima = 5;
+					double temperaturaMaxima = 350;
 					int funcionEnfriamiento = SimulatedAnnealing.FUNCION_ENFRIAMIENTO_GEOMETRICO;
-					double probabilidadAceptar = 0.99999;
+					double probabilidadAceptar = 0.99;
 					ArrayList<CostosSA> costos = SimulatedAnnealing.simulatedAnnealing(solucionInicial, temperaturaMinima, temperaturaMaxima, cantidadSwappings, funcionEnfriamiento, probabilidadAceptar, swap);
 					
 					//plotting

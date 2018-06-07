@@ -9,7 +9,7 @@ public class SimulatedAnnealing {
 	public static final int FUNCION_ENFRIAMIENTO_LOGARITMICO = 2;
 	
 	public static final double RAZON_DECRECIMIENTO_ARITMETICO = 10;
-	public static final double PORCENTAJE_RAZON_DECRECIMIENTO_GEOMETRICO = 50;
+	public static final double PORCENTAJE_RAZON_DECRECIMIENTO_GEOMETRICO = 0.01;
 	public static final double CONSTANTE_DECRECIMIENTO_LOGARITMICO = 10;
 
 	public static ArrayList<CostosSA> simulatedAnnealing(int[] solucionInicial, double temperaturaMinima,
@@ -39,14 +39,16 @@ public class SimulatedAnnealing {
 					solucionInicial = Arrays.copyOf(nuevoVecinoAleatorio, nuevoVecinoAleatorio.length);
 					costo.setCostoMejorSolucion(costoNuevarSolucion);
 					costo.setCostoAnteriorSolucion(costoNuevarSolucion);
+					costos.add(costo);
 				} else {
 					if (funcionProbabilidadBoltzmann(deltaEnergia, temperaturaActual, probabilidadAceptar)) {
 						solucionInicial = Arrays.copyOf(nuevoVecinoAleatorio, nuevoVecinoAleatorio.length);
 						costo.setCostoMejorSolucion(costoNuevarSolucion);
 						costo.setCostoAnteriorSolucion(costoAnteriorSolucion);
+						costos.add(costo);
 					}
 				}
-				costos.add(costo);
+				
 				i++;
 			}
 

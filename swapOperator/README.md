@@ -36,3 +36,7 @@ ejecicio2: generar el 30% de la vecindad y luego buscar el mejor resultado, a pa
 ejercico3: generar el 100% de la vecindad y luego buscar el mejor resultado, a partir de una solución inicial generada aleatoriamente
 
 SA: generar óptimos en base al algoritmo de simulated annealing (Parámetros dentro del método Main y de la clase SimulatedAnnealing)
+
+Argumentos de ejemplo para ejecutar simulated annealing:
+
+-path "C:/Universidad/USACH/2018-1/Optimización en Ingeniería/Ayudantía/Metaheurísticas/Ayudantía 1/Datos/" F64.txt D64.txt 10 SA
