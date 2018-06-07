@@ -43,30 +43,30 @@ public class Main {
 				swap.toStringSolcuionInicial(solucionInicial);
 				
 				//Genero una nueva solución swapped
-				int[] solucionSwapped = swap.swapping(solucionInicial, 4);
-				swap.toStringSolucion(solucionSwapped, 2);
+				//int[] solucionSwapped = swap.swapping(solucionInicial, 4);
+				//swap.toStringSolucion(solucionSwapped, 2);
 				
 				//swap.toStringSolucionSwapped(solucionInicial, cantidadSwappings);
 				
 				
 				//System.out.println("Costo solución inicial: "+swap.evaluarCostoSolucion(solucionInicial));
 				
-				int[] listaOrdenadaF = swap.calcularListaOrdenadaSumatoriaMatriz(swap.getMatrizF(), true);
+				//int[] listaOrdenadaF = swap.calcularListaOrdenadaSumatoriaMatriz(swap.getMatrizF(), true);
 				//swap.toStringLista(listaOrdenadaF, "ascendente F");
 				
-				int[] listaOrdenadaD = swap.calcularListaOrdenadaSumatoriaMatriz(swap.getMatrizD(), false);
+				//int[] listaOrdenadaD = swap.calcularListaOrdenadaSumatoriaMatriz(swap.getMatrizD(), false);
 				//swap.toStringLista(listaOrdenadaD, "descendente D");
 				
-				int[] listaOrdenadaFUnidimensional = swap.calcularListaOrdenadaMatriz(swap.getMatrizF(), true);
+				//int[] listaOrdenadaFUnidimensional = swap.calcularListaOrdenadaMatriz(swap.getMatrizF(), true);
 				//swap.toStringLista(listaOrdenadaFUnidimensional, "ascendente F unidimensional");
 				
-				int[] listaOrdenadaDUnidimensional = swap.calcularListaOrdenadaMatriz(swap.getMatrizD(), false);
+				//int[] listaOrdenadaDUnidimensional = swap.calcularListaOrdenadaMatriz(swap.getMatrizD(), false);
 				//swap.toStringLista(listaOrdenadaDUnidimensional, "descendente D unidimensional");
 				
 				//System.out.println("----------------------------------------");
 				
-				listaOrdenadaFUnidimensional = swap.eliminarCerosLista(listaOrdenadaFUnidimensional);
-				listaOrdenadaDUnidimensional = swap.eliminarCerosLista(listaOrdenadaDUnidimensional);
+				//listaOrdenadaFUnidimensional = swap.eliminarCerosLista(listaOrdenadaFUnidimensional);
+				//listaOrdenadaDUnidimensional = swap.eliminarCerosLista(listaOrdenadaDUnidimensional);
 				
 				//System.out.println("Costo solución ordenada: "+swap.evaluarCostoSolucionListasOrdenadas(listaOrdenadaFUnidimensional, listaOrdenadaDUnidimensional));
 				
@@ -96,7 +96,18 @@ public class Main {
 				    RefineryUtilities.centerFrameOnScreen(demo);
 				    demo.setVisible(true);
 				}else if(args[5].equals("SA")) {
+					System.out.println("######## Simulated Annealing ########");
+					double temperaturaMinima = 0;
+					double temperaturaMaxima = 5;
+					int funcionEnfriamiento = SimulatedAnnealing.FUNCION_ENFRIAMIENTO_GEOMETRICO;
+					double probabilidadAceptar = 0.99999;
+					ArrayList<CostosSA> costos = SimulatedAnnealing.simulatedAnnealing(solucionInicial, temperaturaMinima, temperaturaMaxima, cantidadSwappings, funcionEnfriamiento, probabilidadAceptar, swap);
 					
+					//plotting
+					final XYPlot demo = new XYPlot("Gráfico optimización Simulated Annealing", "Costo sin memoria", "Costo con memoria", costos);
+				    demo.pack();
+				    RefineryUtilities.centerFrameOnScreen(demo);
+				    demo.setVisible(true);
 				}
 			}else if(args[0].equalsIgnoreCase("-help"))	{
 				System.out.println("Ejemplo de sintaxis:");

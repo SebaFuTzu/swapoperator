@@ -54,7 +54,7 @@ public class XYPlot extends ApplicationFrame {
 			series2.add(i, costosSA.get(i).getCostoMejorSolucion());
 		}
 		final XYSeriesCollection data = new XYSeriesCollection();
-		data.addSeries(series1);
+		//data.addSeries(series1);
 		data.addSeries(series2);
 		final JFreeChart chart = ChartFactory.createXYLineChart(title, "X", "Y", data,
 				PlotOrientation.VERTICAL, true, true, false);

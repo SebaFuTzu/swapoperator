@@ -1,54 +1,67 @@
 package swapOperator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SimulatedAnnealing {
 	public static final int FUNCION_ENFRIAMIENTO_ARITMETICO = 0;
 	public static final int FUNCION_ENFRIAMIENTO_GEOMETRICO = 1;
 	public static final int FUNCION_ENFRIAMIENTO_LOGARITMICO = 2;
+	
+	public static final double RAZON_DECRECIMIENTO_ARITMETICO = 10;
+	public static final double PORCENTAJE_RAZON_DECRECIMIENTO_GEOMETRICO = 25;
+	public static final double CONSTANTE_DECRECIMIENTO_LOGARITMICO = 10;
 
-	public ArrayList<CostosSA> simulatedAnnealing(int[] solucionInicial, double temperaturaMinima, double temperaturaMaxima,
-			int cantidadSwappings, int funcionEnfriamiento, double probabilidadAceptar, Swap swap) {
+	public static ArrayList<CostosSA> simulatedAnnealing(int[] solucionInicial, double temperaturaMinima,
+			double temperaturaMaxima, int cantidadSwappings, int funcionEnfriamiento, double probabilidadAceptar,
+			Swap swap) {
+
+		int[] memoriaSolucionInicial = Arrays.copyOf(solucionInicial, solucionInicial.length);
 		
 		ArrayList<CostosSA> costos = new ArrayList<CostosSA>();
-		long startTime = System.nanoTime();//Contador de tiempo
+		long startTime = System.nanoTime();// Contador de tiempo
 
+		int tamañoVecindad = swap.calcularTamañoVecindad(swap.getMatrizF());
+		
 		double temperaturaActual = temperaturaMaxima;
 		// ciclo temperatura
-		while (temperaturaActual < temperaturaMinima) {
+		while (temperaturaActual > temperaturaMinima) {
 
 			// ciclo generación de vecinos dentro de una misma temperatura actual
 			int i = 0;
-			int tamañoVecindad = swap.calcularTamañoVecindad(swap.getMatrizF());
 			while (i < tamañoVecindad) {// itera hasta que se alcance el numero de iteraciones de tamaño de la vecindad
-				int[] nuevoVecinoAleatorio = swap.swapping(solucionInicial, cantidadSwappings);
+				int[] nuevoVecinoAleatorio = swap.swapping(memoriaSolucionInicial, cantidadSwappings);
 				double costoNuevarSolucion = swap.evaluarCostoSolucion(nuevoVecinoAleatorio);
 				double costoAnteriorSolucion = swap.evaluarCostoSolucion(solucionInicial);
 				double deltaEnergia = costoNuevarSolucion - costoAnteriorSolucion;
 				CostosSA costo = new CostosSA();
 				if (deltaEnergia <= 0) {
-					solucionInicial = nuevoVecinoAleatorio;
+					solucionInicial = Arrays.copyOf(nuevoVecinoAleatorio, nuevoVecinoAleatorio.length);
 					costo.setCostoMejorSolucion(costoNuevarSolucion);
 					costo.setCostoAnteriorSolucion(costoNuevarSolucion);
 				} else {
-					if(funcionProbabilidadBoltzmann(deltaEnergia, temperaturaActual, probabilidadAceptar)) {
-						solucionInicial = nuevoVecinoAleatorio;
+					if (funcionProbabilidadBoltzmann(deltaEnergia, temperaturaActual, probabilidadAceptar)) {
+						solucionInicial = Arrays.copyOf(nuevoVecinoAleatorio, nuevoVecinoAleatorio.length);
 						costo.setCostoMejorSolucion(costoNuevarSolucion);
 						costo.setCostoAnteriorSolucion(costoAnteriorSolucion);
 					}
 				}
+				costos.add(costo);
+				i++;
 			}
 
 			// Disminuyo temperatura actual
 			switch (funcionEnfriamiento) {
 			case FUNCION_ENFRIAMIENTO_ARITMETICO:
-				temperaturaActual = funcionEnfriamientoAritmetico(temperaturaActual, 2);
+				temperaturaActual = funcionEnfriamientoAritmetico(temperaturaActual, RAZON_DECRECIMIENTO_ARITMETICO);
 				break;
 			case FUNCION_ENFRIAMIENTO_GEOMETRICO:
-				temperaturaActual = funcionEnfriamientoGeometrico(temperaturaActual, 5);
+				temperaturaActual = funcionEnfriamientoGeometrico(temperaturaActual,
+						PORCENTAJE_RAZON_DECRECIMIENTO_GEOMETRICO);
 				break;
 			case FUNCION_ENFRIAMIENTO_LOGARITMICO:
-				temperaturaActual = funcionEnfriamientoLogaritmico(temperaturaActual, 10);
+				temperaturaActual = funcionEnfriamientoLogaritmico(temperaturaActual,
+						CONSTANTE_DECRECIMIENTO_LOGARITMICO);
 				break;
 			default:
 				break;
@@ -56,28 +69,31 @@ public class SimulatedAnnealing {
 		}
 
 		// imprimo mejor resultado óptimo encontrado
+		System.out.println("Mejor costo encontrado: " + swap.evaluarCostoSolucion(solucionInicial));
+		System.out.print("Mejor solución encontrada: ");
+		swap.toStringSolucion(solucionInicial,0);
 
 		// tiempo de ejecución
 		long endTime = System.nanoTime();
 		long totalTime = (endTime - startTime) / 1000000;
 		System.out.println("tiempo ejecución: " + totalTime + " milisegundos");
-		
+
 		return costos;
 	}
 
-	public double funcionEnfriamientoAritmetico(double temperatura, double razonDecrecimiento) {
+	public static double funcionEnfriamientoAritmetico(double temperatura, double razonDecrecimiento) {
 		return temperatura - razonDecrecimiento;
 	}
 
-	public double funcionEnfriamientoGeometrico(double temperatura, double porcentajeRazonDecrecimiento) {
+	public static double funcionEnfriamientoGeometrico(double temperatura, double porcentajeRazonDecrecimiento) {
 		return temperatura * (porcentajeRazonDecrecimiento / 100);
 	}
 
-	public double funcionEnfriamientoLogaritmico(double temperatura, double constante) {
+	public static double funcionEnfriamientoLogaritmico(double temperatura, double constante) {
 		return constante / Math.log(temperatura);
 	}
 
-	public boolean funcionProbabilidadBoltzmann(double deltaEnergia, double temperatura, double probabilidadAceptar) {
+	public static boolean funcionProbabilidadBoltzmann(double deltaEnergia, double temperatura, double probabilidadAceptar) {
 		return (probabilidadAceptar <= (Math.exp(deltaEnergia / temperatura))) ? true : false;
 	}
 }
