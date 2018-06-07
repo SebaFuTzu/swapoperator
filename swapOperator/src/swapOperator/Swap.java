@@ -45,12 +45,16 @@ public class Swap {
 	public int[] swapping(int[] solucionInicial, int cantidadSwappings){
 		int[] valoresSwapped = new int[cantidadSwappings];
 		int i = 0;
+		ArrayList<Integer> memoria = new ArrayList<>();
 		while(i<cantidadSwappings){
 			int num = rnd.nextInt(solucionInicial.length);
-			if(valoresSwapped[i]==0){
-				valoresSwapped[i] = solucionInicial[num];
-				i++;
-			}			
+			if(!memoria.contains(num) && i!=num) {
+				if(valoresSwapped[i]==0){
+					valoresSwapped[i] = solucionInicial[num];
+					i++;
+					memoria.add(num);
+				}			
+			}
 		}	
 		//valoresSwapped = new int[] {2,3};
 		//solucionInicial = new int[] {3,2,1,4};
@@ -70,7 +74,7 @@ public class Swap {
 	}
 	
 	public void toStringSolcuionInicial(int[] solucionInicial) {
-		System.out.println("A partir de matriz f: "+Arrays.toString(solucionInicial));
+		System.out.println("Solución inicial: "+Arrays.toString(solucionInicial));
 		//System.out.println("A partir de matriz d: "+Arrays.toString(generarSolcuionInicial(matrizD)));
 	}
 	

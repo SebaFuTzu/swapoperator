@@ -43,4 +43,24 @@ public class XYPlot extends ApplicationFrame {
 		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
 		setContentPane(chartPanel);
 	}
+	
+	public XYPlot(final String title, final String leyenda1, String leyenda2, ArrayList<CostosSA> costosSA) {
+
+		super(title);
+		final XYSeries series1 = new XYSeries(leyenda1);
+		final XYSeries series2 = new XYSeries(leyenda2);
+		for(int i=0;i<costosSA.size();i++) {
+			series1.add(i, costosSA.get(i).getCostoAnteriorSolucion());
+			series2.add(i, costosSA.get(i).getCostoMejorSolucion());
+		}
+		final XYSeriesCollection data = new XYSeriesCollection();
+		data.addSeries(series1);
+		data.addSeries(series2);
+		final JFreeChart chart = ChartFactory.createXYLineChart(title, "X", "Y", data,
+				PlotOrientation.VERTICAL, true, true, false);
+
+		final ChartPanel chartPanel = new ChartPanel(chart);
+		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
+		setContentPane(chartPanel);
+	}
 }
