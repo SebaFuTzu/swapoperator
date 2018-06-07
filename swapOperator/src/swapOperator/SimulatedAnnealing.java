@@ -9,7 +9,7 @@ public class SimulatedAnnealing {
 	public static final int FUNCION_ENFRIAMIENTO_LOGARITMICO = 2;
 	
 	public static final double RAZON_DECRECIMIENTO_ARITMETICO = 10;
-	public static final double PORCENTAJE_RAZON_DECRECIMIENTO_GEOMETRICO = 25;
+	public static final double PORCENTAJE_RAZON_DECRECIMIENTO_GEOMETRICO = 50;
 	public static final double CONSTANTE_DECRECIMIENTO_LOGARITMICO = 10;
 
 	public static ArrayList<CostosSA> simulatedAnnealing(int[] solucionInicial, double temperaturaMinima,
@@ -94,6 +94,6 @@ public class SimulatedAnnealing {
 	}
 
 	public static boolean funcionProbabilidadBoltzmann(double deltaEnergia, double temperatura, double probabilidadAceptar) {
-		return (probabilidadAceptar <= (Math.exp(deltaEnergia / temperatura))) ? true : false;
+		return (probabilidadAceptar <= (Math.exp(-deltaEnergia / temperatura))) ? true : false;
 	}
 }
