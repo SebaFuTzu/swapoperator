@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.jfree.ui.RefineryUtilities;
@@ -97,11 +96,44 @@ public class Main {
 				    demo.setVisible(true);
 				}else if(args[5].equals("SA")) {
 					System.out.println("######## Simulated Annealing ########");
+
 					double temperaturaMinima = 0;
 					double temperaturaMaxima = 350;
-					int funcionEnfriamiento = SimulatedAnnealing.FUNCION_ENFRIAMIENTO_GEOMETRICO;
 					double probabilidadAceptar = 0.99;
-					ArrayList<CostosSA> costos = SimulatedAnnealing.simulatedAnnealing(solucionInicial, temperaturaMinima, temperaturaMaxima, cantidadSwappings, funcionEnfriamiento, probabilidadAceptar, swap);
+					int funcionEnfriamiento = SimulatedAnnealing.FUNCION_ENFRIAMIENTO_GEOMETRICO;
+					double decrecimiento = SimulatedAnnealing.RAZON_DECRECIMIENTO_ARITMETICO;
+					
+					
+					if ( args.length > 6)
+						temperaturaMinima = Double.parseDouble(args[6]);
+
+					if ( args.length > 7)
+						temperaturaMaxima = Double.parseDouble(args[7]);
+					
+					if ( args.length > 8)
+						probabilidadAceptar = Double.parseDouble(args[8]);
+					
+					if ( args.length > 9 )
+						funcionEnfriamiento = Integer.parseInt(args[9]);
+					
+					if ( args.length > 10 ) 
+						decrecimiento = Double.parseDouble(args[10]);
+					else { 
+						switch (funcionEnfriamiento) {
+						case SimulatedAnnealing.FUNCION_ENFRIAMIENTO_ARITMETICO:
+							decrecimiento = SimulatedAnnealing.RAZON_DECRECIMIENTO_ARITMETICO;
+							break;
+						case SimulatedAnnealing.FUNCION_ENFRIAMIENTO_GEOMETRICO:
+							decrecimiento = SimulatedAnnealing.PORCENTAJE_RAZON_DECRECIMIENTO_GEOMETRICO;
+							break;
+						case SimulatedAnnealing.FUNCION_ENFRIAMIENTO_LOGARITMICO:
+							decrecimiento = SimulatedAnnealing.CONSTANTE_DECRECIMIENTO_LOGARITMICO;
+							break;
+						}
+					}
+					
+					
+					ArrayList<CostosSA> costos = SimulatedAnnealing.simulatedAnnealing(solucionInicial, temperaturaMinima, temperaturaMaxima, cantidadSwappings, funcionEnfriamiento, probabilidadAceptar, swap, decrecimiento);
 					
 					//plotting
 					final XYPlot demo = new XYPlot("Gráfico optimización Simulated Annealing", "Costo sin memoria", "Costo con memoria", costos);

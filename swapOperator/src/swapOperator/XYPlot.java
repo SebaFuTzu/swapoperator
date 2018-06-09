@@ -9,7 +9,6 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
-import org.jfree.ui.RefineryUtilities;
 
 public class XYPlot extends ApplicationFrame {
 
@@ -50,11 +49,11 @@ public class XYPlot extends ApplicationFrame {
 		final XYSeries series1 = new XYSeries(leyenda1);
 		final XYSeries series2 = new XYSeries(leyenda2);
 		for(int i=0;i<costosSA.size();i++) {
-			series1.add(i, costosSA.get(i).getCostoAnteriorSolucion());
-			series2.add(i, costosSA.get(i).getCostoMejorSolucion());
+			series2.add(i, costosSA.get(i).getCostoAnteriorSolucion());
+			series1.add(i, costosSA.get(i).getCostoMejorSolucion());
 		}
 		final XYSeriesCollection data = new XYSeriesCollection();
-		//data.addSeries(series1);
+		data.addSeries(series1);
 		data.addSeries(series2);
 		final JFreeChart chart = ChartFactory.createXYLineChart(title, "X", "Y", data,
 				PlotOrientation.VERTICAL, true, true, false);

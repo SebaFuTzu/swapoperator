@@ -12,9 +12,10 @@ public class SimulatedAnnealing {
 	public static final double PORCENTAJE_RAZON_DECRECIMIENTO_GEOMETRICO = 0.01;
 	public static final double CONSTANTE_DECRECIMIENTO_LOGARITMICO = 10;
 
+
 	public static ArrayList<CostosSA> simulatedAnnealing(int[] solucionInicial, double temperaturaMinima,
 			double temperaturaMaxima, int cantidadSwappings, int funcionEnfriamiento, double probabilidadAceptar,
-			Swap swap) {
+			Swap swap, double decrecimiento) {
 
 		int[] memoriaSolucionInicial = Arrays.copyOf(solucionInicial, solucionInicial.length);
 		
@@ -55,15 +56,15 @@ public class SimulatedAnnealing {
 			// Disminuyo temperatura actual
 			switch (funcionEnfriamiento) {
 			case FUNCION_ENFRIAMIENTO_ARITMETICO:
-				temperaturaActual = funcionEnfriamientoAritmetico(temperaturaActual, RAZON_DECRECIMIENTO_ARITMETICO);
+				temperaturaActual = funcionEnfriamientoAritmetico(temperaturaActual, decrecimiento);
 				break;
 			case FUNCION_ENFRIAMIENTO_GEOMETRICO:
 				temperaturaActual = funcionEnfriamientoGeometrico(temperaturaActual,
-						PORCENTAJE_RAZON_DECRECIMIENTO_GEOMETRICO);
+						decrecimiento);
 				break;
 			case FUNCION_ENFRIAMIENTO_LOGARITMICO:
 				temperaturaActual = funcionEnfriamientoLogaritmico(temperaturaActual,
-						CONSTANTE_DECRECIMIENTO_LOGARITMICO);
+						decrecimiento);
 				break;
 			default:
 				break;
