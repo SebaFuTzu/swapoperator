@@ -40,3 +40,6 @@ SA: generar óptimos en base al algoritmo de simulated annealing (Parámetros dent
 Argumentos de ejemplo para ejecutar simulated annealing:
 
 -path "C:/Universidad/USACH/2018-1/Optimización en Ingeniería/Ayudantía/Metaheurísticas/Ayudantía 1/Datos/" F64.txt D64.txt 10 SA
+
+Ultimo ejemplo linea de comando
+-path "C:/gitWorkspace/swapoperator/swapOperator/datos/" chr22F.txt chr22D.txt 22 SA 1 350 0.99 1
