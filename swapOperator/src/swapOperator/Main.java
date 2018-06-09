@@ -102,6 +102,7 @@ public class Main {
 					double probabilidadAceptar = 0.99;
 					int funcionEnfriamiento = SimulatedAnnealing.FUNCION_ENFRIAMIENTO_GEOMETRICO;
 					double decrecimiento = SimulatedAnnealing.RAZON_DECRECIMIENTO_ARITMETICO;
+					double ponderadorVecindad = 1;
 					
 					
 					if ( args.length > 6)
@@ -132,8 +133,12 @@ public class Main {
 						}
 					}
 					
+					if ( args.length > 11 ) 
+						ponderadorVecindad = Double.parseDouble(args[11]);
 					
-					ArrayList<CostosSA> costos = SimulatedAnnealing.simulatedAnnealing(solucionInicial, temperaturaMinima, temperaturaMaxima, cantidadSwappings, funcionEnfriamiento, probabilidadAceptar, swap, decrecimiento);
+					
+					ArrayList<CostosSA> costos = SimulatedAnnealing.simulatedAnnealing(solucionInicial, temperaturaMinima, temperaturaMaxima, cantidadSwappings, 
+							funcionEnfriamiento, probabilidadAceptar, swap, decrecimiento, ponderadorVecindad);
 					
 					//plotting
 					final XYPlot demo = new XYPlot("Gráfico optimización Simulated Annealing", "Costo sin memoria", "Costo con memoria", costos);

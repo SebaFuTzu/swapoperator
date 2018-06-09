@@ -15,14 +15,14 @@ public class SimulatedAnnealing {
 
 	public static ArrayList<CostosSA> simulatedAnnealing(int[] solucionInicial, double temperaturaMinima,
 			double temperaturaMaxima, int cantidadSwappings, int funcionEnfriamiento, double probabilidadAceptar,
-			Swap swap, double decrecimiento) {
+			Swap swap, double decrecimiento, double ponderadorVecindad) {
 
 		int[] memoriaSolucionInicial = Arrays.copyOf(solucionInicial, solucionInicial.length);
 		
 		ArrayList<CostosSA> costos = new ArrayList<CostosSA>();
 		long startTime = System.nanoTime();// Contador de tiempo
 
-		int tamañoVecindad = swap.calcularTamañoVecindad(swap.getMatrizF());
+		int tamanoVecindad = swap.calcularTamañoVecindad(swap.getMatrizF());
 		
 		double temperaturaActual = temperaturaMaxima;
 		// ciclo temperatura
@@ -30,7 +30,7 @@ public class SimulatedAnnealing {
 
 			// ciclo generación de vecinos dentro de una misma temperatura actual
 			int i = 0;
-			while (i < tamañoVecindad) {// itera hasta que se alcance el numero de iteraciones de tamaño de la vecindad
+			while (i < (tamanoVecindad * ponderadorVecindad)) {// itera hasta que se alcance el numero de iteraciones de tamaño de la vecindad
 				int[] nuevoVecinoAleatorio = swap.swapping(memoriaSolucionInicial, cantidadSwappings);
 				double costoNuevarSolucion = swap.evaluarCostoSolucion(nuevoVecinoAleatorio);
 				double costoAnteriorSolucion = swap.evaluarCostoSolucion(solucionInicial);
