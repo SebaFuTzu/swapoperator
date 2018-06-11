@@ -41,13 +41,13 @@ public class SimulatedAnnealing {
 					solucionInicial = Arrays.copyOf(nuevoVecinoAleatorio, nuevoVecinoAleatorio.length);
 					costo.setCostoActualSolucion(costoNuevaSolucion);
 					if(costos.size()>0) {
-						if(costos.get(costos.size()-1).getCostoMejorSolucion()<costoActualSolucion) {
+						if(costos.get(costos.size()-1).getCostoMejorSolucion()<costoNuevaSolucion) {
 							costo.setCostoMejorSolucion(costos.get(costos.size()-1).getCostoMejorSolucion());
 						}else {
-							costo.setCostoMejorSolucion(costoActualSolucion);
+							costo.setCostoMejorSolucion(costoNuevaSolucion);
 						}
 					}else {
-						costo.setCostoMejorSolucion(costoActualSolucion);
+						costo.setCostoMejorSolucion(costoNuevaSolucion);
 					}
 					costos.add(costo);
 				} else {
