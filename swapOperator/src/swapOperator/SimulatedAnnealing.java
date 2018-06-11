@@ -2,6 +2,7 @@ package swapOperator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class SimulatedAnnealing {
 	public static final int FUNCION_ENFRIAMIENTO_ARITMETICO = 0;
@@ -31,21 +32,28 @@ public class SimulatedAnnealing {
 			// ciclo generación de vecinos dentro de una misma temperatura actual
 			int i = 0;
 			while (i < (tamanoVecindad * ponderadorVecindad)) {// itera hasta que se alcance el numero de iteraciones de tamaño de la vecindad
-				int[] nuevoVecinoAleatorio = swap.swapping(memoriaSolucionInicial, cantidadSwappings);
-				double costoNuevarSolucion = swap.evaluarCostoSolucion(nuevoVecinoAleatorio);
-				double costoAnteriorSolucion = swap.evaluarCostoSolucion(solucionInicial);
-				double deltaEnergia = costoNuevarSolucion - costoAnteriorSolucion;
+				int[] nuevoVecinoAleatorio = swap.swapping(solucionInicial, cantidadSwappings);
+				double costoNuevaSolucion = swap.evaluarCostoSolucion(nuevoVecinoAleatorio);
+				double costoActualSolucion = swap.evaluarCostoSolucion(solucionInicial);
+				double deltaEnergia = costoNuevaSolucion - costoActualSolucion;
 				CostosSA costo = new CostosSA();
 				if (deltaEnergia <= 0) {
 					solucionInicial = Arrays.copyOf(nuevoVecinoAleatorio, nuevoVecinoAleatorio.length);
-					costo.setCostoMejorSolucion(costoNuevarSolucion);
-					costo.setCostoAnteriorSolucion(costoNuevarSolucion);
+					costo.setCostoMejorSolucion(costoNuevaSolucion);
+					costo.setCostoActualSolucion(costoNuevaSolucion);
 					costos.add(costo);
 				} else {
+					Random rnd = new Random();
+					probabilidadAceptar = rnd.nextDouble();
 					if (funcionProbabilidadBoltzmann(deltaEnergia, temperaturaActual, probabilidadAceptar)) {
 						solucionInicial = Arrays.copyOf(nuevoVecinoAleatorio, nuevoVecinoAleatorio.length);
-						costo.setCostoMejorSolucion(costoNuevarSolucion);
-						costo.setCostoAnteriorSolucion(costoAnteriorSolucion);
+						costo.setCostoMejorSolucion(costoNuevaSolucion);
+						if(costos.get(costos.size()-1).getCostoMejorSolucion()<costoActualSolucion) {
+							costo.setCostoActualSolucion(costos.get(costos.size()-1).getCostoMejorSolucion());
+						}else {
+							costo.setCostoActualSolucion(costoActualSolucion);
+						}
+						
 						costos.add(costo);
 					}
 				}
