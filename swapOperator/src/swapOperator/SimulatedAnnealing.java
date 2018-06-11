@@ -39,21 +39,32 @@ public class SimulatedAnnealing {
 				CostosSA costo = new CostosSA();
 				if (deltaEnergia <= 0) {
 					solucionInicial = Arrays.copyOf(nuevoVecinoAleatorio, nuevoVecinoAleatorio.length);
-					costo.setCostoMejorSolucion(costoNuevaSolucion);
 					costo.setCostoActualSolucion(costoNuevaSolucion);
+					if(costos.size()>0) {
+						if(costos.get(costos.size()-1).getCostoMejorSolucion()<costoActualSolucion) {
+							costo.setCostoMejorSolucion(costos.get(costos.size()-1).getCostoMejorSolucion());
+						}else {
+							costo.setCostoMejorSolucion(costoActualSolucion);
+						}
+					}else {
+						costo.setCostoMejorSolucion(costoActualSolucion);
+					}
 					costos.add(costo);
 				} else {
 					Random rnd = new Random();
 					probabilidadAceptar = rnd.nextDouble();
 					if (funcionProbabilidadBoltzmann(deltaEnergia, temperaturaActual, probabilidadAceptar)) {
 						solucionInicial = Arrays.copyOf(nuevoVecinoAleatorio, nuevoVecinoAleatorio.length);
-						costo.setCostoMejorSolucion(costoNuevaSolucion);
-						if(costos.get(costos.size()-1).getCostoMejorSolucion()<costoActualSolucion) {
-							costo.setCostoActualSolucion(costos.get(costos.size()-1).getCostoMejorSolucion());
+						costo.setCostoActualSolucion(costoNuevaSolucion);
+						if(costos.size()>0) {
+							if(costos.get(costos.size()-1).getCostoMejorSolucion()<costoActualSolucion) {
+								costo.setCostoMejorSolucion(costos.get(costos.size()-1).getCostoMejorSolucion());
+							}else {
+								costo.setCostoMejorSolucion(costoActualSolucion);
+							}
 						}else {
-							costo.setCostoActualSolucion(costoActualSolucion);
+							costo.setCostoMejorSolucion(costoActualSolucion);
 						}
-						
 						costos.add(costo);
 					}
 				}

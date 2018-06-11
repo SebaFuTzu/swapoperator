@@ -49,8 +49,8 @@ public class XYPlot extends ApplicationFrame {
 		final XYSeries series1 = new XYSeries(leyenda1);
 		final XYSeries series2 = new XYSeries(leyenda2);
 		for(int i=0;i<costosSA.size();i++) {
-			series2.add(i, costosSA.get(i).getCostoActualSolucion());
-			series1.add(i, costosSA.get(i).getCostoMejorSolucion());
+			series1.add(i, costosSA.get(i).getCostoActualSolucion());
+			series2.add(i, costosSA.get(i).getCostoMejorSolucion());
 		}
 		final XYSeriesCollection data = new XYSeriesCollection();
 		data.addSeries(series1);
