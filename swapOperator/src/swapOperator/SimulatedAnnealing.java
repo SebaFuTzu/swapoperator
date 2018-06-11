@@ -36,6 +36,8 @@ public class SimulatedAnnealing {
 				double costoNuevaSolucion = swap.evaluarCostoSolucion(nuevoVecinoAleatorio);
 				double costoActualSolucion = swap.evaluarCostoSolucion(solucionInicial);
 				double deltaEnergia = costoNuevaSolucion - costoActualSolucion;
+				int[] copiaNuevoVecinoAleatorio = Arrays.copyOf(nuevoVecinoAleatorio, nuevoVecinoAleatorio.length);
+				int[] copiaSolucionActual = Arrays.copyOf(solucionInicial, solucionInicial.length);
 				CostosSA costo = new CostosSA();
 				if (deltaEnergia <= 0) {
 					solucionInicial = Arrays.copyOf(nuevoVecinoAleatorio, nuevoVecinoAleatorio.length);
@@ -43,11 +45,15 @@ public class SimulatedAnnealing {
 					if(costos.size()>0) {
 						if(costos.get(costos.size()-1).getCostoMejorSolucion()<costoNuevaSolucion) {
 							costo.setCostoMejorSolucion(costos.get(costos.size()-1).getCostoMejorSolucion());
+							int [] mejorResultadoHistorico = Arrays.copyOf(costos.get(costos.size()-1).getMejorSolucionHistorica(), costos.get(costos.size()-1).getMejorSolucionHistorica().length);
+							costo.setMejorSolucionHistorica(mejorResultadoHistorico);
 						}else {
 							costo.setCostoMejorSolucion(costoNuevaSolucion);
+							costo.setMejorSolucionHistorica(copiaNuevoVecinoAleatorio);
 						}
 					}else {
 						costo.setCostoMejorSolucion(costoNuevaSolucion);
+						costo.setMejorSolucionHistorica(copiaNuevoVecinoAleatorio);
 					}
 					costos.add(costo);
 				} else {
@@ -59,11 +65,15 @@ public class SimulatedAnnealing {
 						if(costos.size()>0) {
 							if(costos.get(costos.size()-1).getCostoMejorSolucion()<costoActualSolucion) {
 								costo.setCostoMejorSolucion(costos.get(costos.size()-1).getCostoMejorSolucion());
+								int [] mejorResultadoHistorico = Arrays.copyOf(costos.get(costos.size()-1).getMejorSolucionHistorica(), costos.get(costos.size()-1).getMejorSolucionHistorica().length);
+								costo.setMejorSolucionHistorica(mejorResultadoHistorico);
 							}else {
 								costo.setCostoMejorSolucion(costoActualSolucion);
+								costo.setMejorSolucionHistorica(copiaSolucionActual);
 							}
 						}else {
 							costo.setCostoMejorSolucion(costoActualSolucion);
+							costo.setMejorSolucionHistorica(copiaSolucionActual);
 						}
 						costos.add(costo);
 					}
@@ -91,9 +101,12 @@ public class SimulatedAnnealing {
 		}
 
 		// imprimo mejor resultado óptimo encontrado
-		System.out.println("Mejor costo encontrado: " + swap.evaluarCostoSolucion(solucionInicial));
-		System.out.print("Mejor solución encontrada: ");
+		System.out.println("Mejor costo encontrado al término de la iteración: " + swap.evaluarCostoSolucion(solucionInicial));
+		System.out.print("Mejor solución encontrada al término de la iteración: ");
 		swap.toStringSolucion(solucionInicial,0);
+		System.out.println("Mejor costo histórico encontrado: " + swap.evaluarCostoSolucion(costos.get(costos.size()-1).getMejorSolucionHistorica()));
+		System.out.print("Mejor solución histórica encontrada: ");
+		swap.toStringSolucion(costos.get(costos.size()-1).getMejorSolucionHistorica(),1);
 
 		// tiempo de ejecución
 		long endTime = System.nanoTime();

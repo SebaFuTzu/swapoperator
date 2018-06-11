@@ -3,6 +3,7 @@ package swapOperator;
 public class CostosSA {
 	private double costoMejorSolucion = 0;
 	private double costoActualSolucion = 0;
+	private int[] mejorSolucionHistorica = null;
 	
 	public CostosSA() {
 		super();
@@ -26,4 +27,13 @@ public class CostosSA {
 		this.costoActualSolucion = costoActualSolucion;
 	}
 
+	public int[] getMejorSolucionHistorica() {
+		return mejorSolucionHistorica;
+	}
+
+	public void setMejorSolucionHistorica(int[] mejorSolucionHistorica) {
+		this.mejorSolucionHistorica = mejorSolucionHistorica;
+	}
+
+	
 }
