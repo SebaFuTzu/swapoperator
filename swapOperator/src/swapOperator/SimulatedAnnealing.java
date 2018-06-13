@@ -33,6 +33,7 @@ public class SimulatedAnnealing {
 		long startTime = System.nanoTime();// Contador de tiempo
 
 		int tamanoVecindad = swap.calcularTamañoVecindad(swap.getMatrizF());
+		//int tamanoVecindad = 50;
 		
 		double temperaturaActual = temperaturaMaxima;
 		// ciclo temperatura

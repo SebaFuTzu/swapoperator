@@ -43,3 +43,6 @@ Argumentos de ejemplo para ejecutar simulated annealing:
 
 Ultimo ejemplo linea de comando
 -path "C:/gitWorkspace/swapoperator/swapOperator/datos/" chr22F.txt chr22D.txt 22 SA 1 350 0.99 1
+
+Argumentos Simmulated Annealing instancia 64:
+-path "C:/Users/SebaFuTzu/git/swapOperatorLocal/swapOperator/datos/" F64.txt D64.txt 2 SA 1 1000 0.95 1 0.3 2
