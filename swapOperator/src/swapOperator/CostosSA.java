@@ -3,7 +3,7 @@ package swapOperator;
 public class CostosSA {
 	private double costoMejorSolucion = 0;
 	private double costoActualSolucion = 0;
-	private int[] mejorSolucionHistorica = null;
+	public static int[] mejorSolucionHistorica = null;
 	
 	public CostosSA() {
 		super();

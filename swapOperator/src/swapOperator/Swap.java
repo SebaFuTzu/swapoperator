@@ -9,6 +9,10 @@ public class Swap {
 	private int[][] matrizF;
 	private int[][] matrizD;
 	private Random rnd;
+	int[] valoresSwapped;
+	ArrayList<Integer> memoria;
+	int[] solucionSwapped;
+	double costo;
 	
 	public Swap(int[][] matrizF, int[][] matrizD){
 		this.matrizF=matrizF;
@@ -43,9 +47,9 @@ public class Swap {
 	}
 	
 	public int[] swapping(int[] solucionInicial, int cantidadSwappings){
-		int[] valoresSwapped = new int[cantidadSwappings];
+		valoresSwapped = new int[cantidadSwappings];
 		int i = 0;
-		ArrayList<Integer> memoria = new ArrayList<>();
+		memoria = new ArrayList<>();
 		while(i<cantidadSwappings){
 			int num = rnd.nextInt(solucionInicial.length);
 			if(!memoria.contains(num) && i!=num) {
@@ -59,7 +63,7 @@ public class Swap {
 		//valoresSwapped = new int[] {2,3};
 		//solucionInicial = new int[] {3,2,1,4};
 		//int z = 0;
-		int[] solucionSwapped = new int[solucionInicial.length];
+		solucionSwapped = new int[solucionInicial.length];
 		System.arraycopy(solucionInicial, 0, solucionSwapped, 0, solucionInicial.length);
 		for(int x=0;x<valoresSwapped.length;x++){			
 			for(int y=0;y<solucionInicial.length;y++) {
@@ -91,7 +95,7 @@ public class Swap {
 	}
 	
 	public double evaluarCostoSolucion(int[] solucionInicial) {
-		double costo = 0;
+		costo = 0;
 		try {		
 			for(int i=0;i<matrizF.length;i++) {
 				for(int j=0;j<matrizF[i].length;j++) {
