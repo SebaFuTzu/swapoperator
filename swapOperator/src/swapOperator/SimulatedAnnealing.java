@@ -32,7 +32,7 @@ public class SimulatedAnnealing {
 		ArrayList<CostosSA> costos = new ArrayList<CostosSA>();
 		long startTime = System.nanoTime();// Contador de tiempo
 
-		int tamanoVecindad = swap.calcularTamañoVecindad(swap.getMatrizF());
+		int tamanoVecindad = swap.calcularTamañoVecindad(swap.getMatrizF(), cantidadSwappings);
 		//int tamanoVecindad = 50;
 		
 		double temperaturaActual = temperaturaMaxima;

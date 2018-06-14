@@ -69,7 +69,7 @@ public class Main {
 				
 				//System.out.println("Costo solución ordenada: "+swap.evaluarCostoSolucionListasOrdenadas(listaOrdenadaFUnidimensional, listaOrdenadaDUnidimensional));
 				
-				int tamañoVecindad = swap.calcularTamañoVecindad(f);
+				int tamañoVecindad = swap.calcularTamañoVecindad(f, cantidadSwappings);
 				
 				//System.out.println("Tamaño total vecindad: "+tamañoVecindad);
 				

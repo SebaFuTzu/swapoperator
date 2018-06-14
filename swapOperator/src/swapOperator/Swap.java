@@ -208,9 +208,18 @@ public class Swap {
 		return listaTemp.stream().mapToInt(i -> i).toArray();
 	}
 	
-	public int calcularTamañoVecindad(int[][] matriz) {
-		return (matriz.length*(matriz.length-1))/2;
+	public int calcularTamañoVecindad(int[][] matriz, int cantidadSwappings) {
+		return factorial(matriz.length)/(factorial(cantidadSwappings)*factorial(matriz.length-cantidadSwappings));
+		//return (matriz.length*(matriz.length-1))/2;
 	}
+	
+	public static int factorial(int n) {
+        int resultado = 1;
+        for (int i = 1; i <= n; i++) {
+            resultado *= i;
+        }
+        return resultado;
+    }
 	
 	public void ejercicio1(int[] solucionInicial, int cantidadSwappings, int tamañoVecindad, double porcentajeVecindad) {
 		long startTime = System.nanoTime();
