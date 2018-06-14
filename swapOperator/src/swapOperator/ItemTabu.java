@@ -3,10 +3,19 @@ package swapOperator;
 public class ItemTabu {
 	private int item1=0;
 	private int item2=0;
+	private double orden = 0;
 	
 	public ItemTabu(int item1, int item2) {
 		this.item1=item1;
 		this.item2=item2;
+	}
+
+	public double getOrden() {
+		return orden;
+	}
+
+	public void setOrden(double orden) {
+		this.orden = orden;
 	}
 
 	public int getItem1() {
