@@ -8,6 +8,7 @@ public class TabuSearch {
 	
 	static HashMap<ItemTabu, Integer> listaTabu;
 	static HashMap<ItemTabu, Integer> memoriaFrecuencias;
+	static HashMap<ItemTabu, Integer> listaCandidatos;
 	
 	public static ArrayList<CostosSA> TabuSearch(int[] solucionInicial, Swap swap, int duracionTabuList) {
 		//definición de objetos y variables
@@ -19,6 +20,7 @@ public class TabuSearch {
 		//int tamanoVecindad = swap.calcularTamañoVecindad(swap.getMatrizF(), cantidadSwappings);
 		inicializarListaTabu(solucionInicial);
 		inicializarMemoriaFrecuencias(solucionInicial);
+		inicializarListaCandidatos(solucionInicial);
 		
 		
 		
@@ -49,6 +51,16 @@ public class TabuSearch {
 				memoriaFrecuencias.put(new ItemTabu(solucionInicial[i], solucionInicial[j]),0);			}
 		}
 	}
+	
+	//inicializamos la lista de candidatos
+		public static void inicializarListaCandidatos(int[] solucionInicial){
+			Arrays.sort(solucionInicial);//ordeno la solución inicial de menor a mayor
+			listaCandidatos = new HashMap<ItemTabu, Integer>();
+			for(int i=0;i<solucionInicial.length;i++) {
+				for(int j=i+1;j<solucionInicial.length;j++) {
+					listaCandidatos.put(new ItemTabu(solucionInicial[i], solucionInicial[j]),0);			}
+			}
+		}
 	
 	//función criterio de aspiración tabú
 	public static boolean evaluarCriterioAspiracion(double costoSolucionActual, double costoSolucionTabu) {
