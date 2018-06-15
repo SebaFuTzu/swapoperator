@@ -68,16 +68,16 @@ public class Main {
 				//listaOrdenadaDUnidimensional = swap.eliminarCerosLista(listaOrdenadaDUnidimensional);
 				
 				//System.out.println("Costo solución ordenada: "+swap.evaluarCostoSolucionListasOrdenadas(listaOrdenadaFUnidimensional, listaOrdenadaDUnidimensional));
-				
-				int tamañoVecindad = swap.calcularTamañoVecindad(f, cantidadSwappings);
-				
+					
 				//System.out.println("Tamaño total vecindad: "+tamañoVecindad);
 				
 				if(args[5].equals("ejercicio1")) {
 					System.out.println("######## Ejercicio 1 ########");
+					int tamañoVecindad = (int)swap.calcularTamañoVecindad(f, cantidadSwappings);
 					swap.ejercicio1(solucionInicial, cantidadSwappings, tamañoVecindad, 50);
 				}else if(args[5].equals("ejercicio2")) {
 					System.out.println("######## Ejercicio 2 ########");
+					int tamañoVecindad = (int)swap.calcularTamañoVecindad(f, cantidadSwappings);
 					ArrayList<Double> costos = swap.ejercicio2(solucionInicial, cantidadSwappings, tamañoVecindad, 30);
 					
 					//plotting
@@ -87,6 +87,7 @@ public class Main {
 				    demo.setVisible(true);
 				}else if(args[5].equals("ejercicio3")) {
 					System.out.println("######## Ejercicio 3 ########");
+					int tamañoVecindad = (int)swap.calcularTamañoVecindad(f, cantidadSwappings);
 					ArrayList<Double> costos = swap.ejercicio2(solucionInicial, cantidadSwappings, tamañoVecindad, 100);
 					
 					//plotting
@@ -137,11 +138,29 @@ public class Main {
 						ponderadorVecindad = Double.parseDouble(args[11]);
 					
 					
-					ArrayList<CostosSA> costos = SimulatedAnnealing.simulatedAnnealing(solucionInicial, temperaturaMinima, temperaturaMaxima, cantidadSwappings, 
+					ArrayList<Costos> costos = SimulatedAnnealing.simulatedAnnealing(solucionInicial, temperaturaMinima, temperaturaMaxima, cantidadSwappings, 
 							funcionEnfriamiento, probabilidadAceptar, swap, decrecimiento, ponderadorVecindad);
 					
 					//plotting
 					final XYPlot demo = new XYPlot("Gráfico optimización Simulated Annealing", "Costo sin memoria", "Costo con memoria", costos);
+				    demo.pack();
+				    RefineryUtilities.centerFrameOnScreen(demo);
+				    demo.setVisible(true);
+				}else if(args[5].equals("TABU")) {
+					System.out.println("######## Tabu search ########");
+					int duracionTabuList = 100;
+					int iteraciones = 80;
+					
+					if ( args.length > 6)
+						duracionTabuList = Integer.parseInt(args[6]);
+
+					if ( args.length > 7)
+						iteraciones = Integer.parseInt(args[7]);
+					
+					ArrayList<Double> costos = TabuSearch.TabuSearch(solucionInicial, swap, duracionTabuList, iteraciones);
+					
+					//plotting
+					final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos);
 				    demo.pack();
 				    RefineryUtilities.centerFrameOnScreen(demo);
 				    demo.setVisible(true);

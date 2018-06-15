@@ -8,64 +8,92 @@ import java.util.Map;
 
 public class TabuSearch {
 
-	static HashMap<ItemTabu, Double> listaTabu;
+	static HashMap<ItemTabu, Integer> listaTabu;
 	static HashMap<ItemTabu, Double> memoriaFrecuencias;
 	static HashMap<ItemTabu, Double> listaCandidatos;
 	static int[] solucionActual;
 	static int[] valoresSwapped;
+	static int cantidadSwappings;
+	static int tamanoVecindad;
 	static double costoSolucionActual;
+	static double costoSolucionInicial;
+	static ArrayList<ItemTabu> prioridadEvaluacion;
+	static ItemTabu mejorSolucion;
+	static double penalizacion;
+	static Costos costo;
 
-	public static ArrayList<CostosSA> TabuSearch(int[] solucionInicial, Swap swap, int duracionTabuList) {
+	public static ArrayList<Double> TabuSearch(int[] solucionInicial, Swap swap, int duracionTabuList, int iteraciones) {
 		// definición de objetos y variables
-		int cantidadSwappings = 2;
+		cantidadSwappings = 2;
 		valoresSwapped = new int[cantidadSwappings];
 
-		ArrayList<CostosSA> costos = new ArrayList<CostosSA>();
+		ArrayList<Double> costos = new ArrayList<Double>();
 		long startTime = System.nanoTime();// Contador de tiempo
 
-		int tamanoVecindad = swap.calcularTamañoVecindad(swap.getMatrizF(), cantidadSwappings);
+		//tamanoVecindad = swap.calcularTamañoVecindad(swap.getMatrizF(), cantidadSwappings);
 		inicializarListaTabu(solucionInicial);
 		inicializarMemoriaFrecuencias(solucionInicial);
 		inicializarListaCandidatos(solucionInicial);
 
-		double costoSolucionInicial = swap.evaluarCostoSolucion(solucionInicial);
+		costoSolucionInicial = swap.evaluarCostoSolucion(solucionInicial);
+		costos.add(costoSolucionInicial);
 
-		// Genero la vecindad y los valores de las soluciones candidatas a óptimo
-		ArrayList<ItemTabu> prioridadEvaluacion = new ArrayList<>(); 
-		for (Map.Entry<ItemTabu, Double> entry : listaTabu.entrySet()) {
-			valoresSwapped[0] = entry.getKey().getItem1();
-			valoresSwapped[1] = entry.getKey().getItem2();
-			solucionActual = swap.swapping(solucionInicial, valoresSwapped);
-			costoSolucionActual = swap.evaluarCostoSolucion(solucionActual);
-			entry.setValue(costoSolucionInicial - costoSolucionActual);// guardo la mayor diferencia como mejor costo
-			entry.getKey().setOrden(costoSolucionInicial - costoSolucionActual);
-			prioridadEvaluacion.add(entry.getKey());			
-		}
-		prioridadEvaluacion.sort(Comparator.comparingDouble(ItemTabu::getOrden));
-		
-		//calculo la mejor solución para esta iteración
-		ItemTabu mejorSolucion = null;
-		for (int z=prioridadEvaluacion.size()-1;z>=0;z--) {			
-			// guardo el mejor item hasta el momento
-			if (mejorSolucion == null || (prioridadEvaluacion.get(z).getOrden()-mejorSolucion.getOrden()) < 0) {
-				// verifico que no esté en la lista tabú
-				if (listaTabu.get(prioridadEvaluacion.get(z)) <= 0) {// no es tabú
-					mejorSolucion = prioridadEvaluacion.get(z);
-					break;
-				} else {// es tabú
-					if(mejorSolucion==null) {
-						valoresSwapped[0] = prioridadEvaluacion.get(z).getItem1();
-						valoresSwapped[1] = prioridadEvaluacion.get(z).getItem2();
-						solucionActual = swap.swapping(solucionInicial, valoresSwapped);
-						costoSolucionActual = swap.evaluarCostoSolucion(solucionActual);
-						if (evaluarCriterioAspiracion(costoSolucionInicial, costoSolucionActual)) {// comparo la solución tabú con la mejor histórica
-							mejorSolucion = prioridadEvaluacion.get(z);
-							break;
+		while(iteraciones>0) {
+			// Genero la vecindad y los valores de las soluciones candidatas a óptimo
+			prioridadEvaluacion = new ArrayList<>(); 
+			for (Map.Entry<ItemTabu, Integer> entry : listaTabu.entrySet()) {
+				valoresSwapped[0] = entry.getKey().getItem1();
+				valoresSwapped[1] = entry.getKey().getItem2();
+				solucionActual = swap.swapping(solucionInicial, valoresSwapped);
+				costoSolucionActual = swap.evaluarCostoSolucion(solucionActual);
+				//entry.setValue(costoSolucionInicial - costoSolucionActual);// guardo la mayor diferencia como mejor costo
+				//entry.getKey().setOrden(costoSolucionInicial - costoSolucionActual);
+				penalizacion = memoriaFrecuencias.get(new ItemTabu(entry.getKey().getItem1(), entry.getKey().getItem2(),0));
+				prioridadEvaluacion.add(new ItemTabu(valoresSwapped[0], valoresSwapped[1], costoSolucionInicial - costoSolucionActual - penalizacion));			
+			}
+			prioridadEvaluacion.sort(Comparator.comparingDouble(ItemTabu::getCosto));
+			
+			//calculo la mejor solución para esta iteración
+			mejorSolucion = null;
+			for (int z=prioridadEvaluacion.size()-1;z>=0;z--) {			
+				// guardo el mejor item hasta el momento
+				if (mejorSolucion == null || (prioridadEvaluacion.get(z).getCosto()-mejorSolucion.getCosto()) < 0) {
+					// verifico que no esté en la lista tabú
+					if (listaTabu.get(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0)) <= 0) {// no es tabú
+						mejorSolucion = prioridadEvaluacion.get(z);
+						listaTabu.put(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0), listaTabu.get(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0))+duracionTabuList);
+						memoriaFrecuencias.put(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0), memoriaFrecuencias.get(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0))+1);
+						break;
+					} else {// es tabú
+						if(mejorSolucion==null) {//sólo si no hay una solución ya guardada antes
+							valoresSwapped[0] = prioridadEvaluacion.get(z).getItem1();
+							valoresSwapped[1] = prioridadEvaluacion.get(z).getItem2();
+							solucionActual = swap.swapping(solucionInicial, valoresSwapped);
+							costoSolucionActual = swap.evaluarCostoSolucion(solucionActual);
+							if (evaluarCriterioAspiracion(costoSolucionInicial, costoSolucionActual)) {// comparo la solución tabú con la mejor histórica
+								mejorSolucion = prioridadEvaluacion.get(z);
+								listaTabu.put(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0), listaTabu.get(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0))+duracionTabuList);
+								memoriaFrecuencias.put(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0), memoriaFrecuencias.get(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0))+1);
+								break;
+							}
 						}
 					}
 				}
 			}
+			if(mejorSolucion==null)
+				break;
+			valoresSwapped[0] = mejorSolucion.getItem1();
+			valoresSwapped[1] = mejorSolucion.getItem2();
+			solucionInicial = swap.swapping(solucionInicial, valoresSwapped);
+			costoSolucionInicial = swap.evaluarCostoSolucion(solucionInicial);
+			costos.add(costoSolucionInicial);
+			
+			iteraciones--;
 		}
+		
+		System.out.println("Mejor costo histórico encontrado: " + swap.evaluarCostoSolucion(solucionInicial));
+		System.out.print("Mejor solución histórica encontrada: ");
+		swap.toStringSolucion(solucionInicial,1);
 
 		// tiempo de ejecución
 		long endTime = System.nanoTime();
@@ -78,10 +106,10 @@ public class TabuSearch {
 	// inicializamos lista tabu
 	public static void inicializarListaTabu(int[] solucionInicial) {
 		Arrays.sort(solucionInicial);// ordeno la solución inicial de menor a mayor
-		listaTabu = new HashMap<ItemTabu, Double>();
+		listaTabu = new HashMap<ItemTabu, Integer>();
 		for (int i = 0; i < solucionInicial.length; i++) {
 			for (int j = i + 1; j < solucionInicial.length; j++) {
-				listaTabu.put(new ItemTabu(solucionInicial[i], solucionInicial[j]), 0.0);
+				listaTabu.put(new ItemTabu(solucionInicial[i], solucionInicial[j],0), 0);
 			}
 		}
 	}
@@ -92,7 +120,7 @@ public class TabuSearch {
 		memoriaFrecuencias = new HashMap<ItemTabu, Double>();
 		for (int i = 0; i < solucionInicial.length; i++) {
 			for (int j = i + 1; j < solucionInicial.length; j++) {
-				memoriaFrecuencias.put(new ItemTabu(solucionInicial[i], solucionInicial[j]), 0.0);
+				memoriaFrecuencias.put(new ItemTabu(solucionInicial[i], solucionInicial[j],0), 0.0);
 			}
 		}
 	}
@@ -103,7 +131,7 @@ public class TabuSearch {
 		listaCandidatos = new HashMap<ItemTabu, Double>();
 		for (int i = 0; i < solucionInicial.length; i++) {
 			for (int j = i + 1; j < solucionInicial.length; j++) {
-				listaCandidatos.put(new ItemTabu(solucionInicial[i], solucionInicial[j]), 0.0);
+				listaCandidatos.put(new ItemTabu(solucionInicial[i], solucionInicial[j],0), 0.0);
 			}
 		}
 	}
@@ -112,6 +140,6 @@ public class TabuSearch {
 	public static boolean evaluarCriterioAspiracion(double costoMejorSolucionHistorica, double costoSolucionTabu) {
 		return (costoMejorSolucionHistorica - costoSolucionTabu) > 0;// si la solución tabu es mejor que la solucion
 																		// inicial,
-		// retorno true
+																		// retorno true
 	}
 }

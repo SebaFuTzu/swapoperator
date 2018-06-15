@@ -43,7 +43,7 @@ public class XYPlot extends ApplicationFrame {
 		setContentPane(chartPanel);
 	}
 	
-	public XYPlot(final String title, final String leyenda1, String leyenda2, ArrayList<CostosSA> costosSA) {
+	public XYPlot(final String title, final String leyenda1, String leyenda2, ArrayList<Costos> costosSA) {
 
 		super(title);
 		final XYSeries series1 = new XYSeries(leyenda1);

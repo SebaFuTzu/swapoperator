@@ -14,7 +14,7 @@ public class SimulatedAnnealing {
 	public static final double CONSTANTE_DECRECIMIENTO_LOGARITMICO = 10;
 
 
-	public static ArrayList<CostosSA> simulatedAnnealing(int[] solucionInicial, double temperaturaMinima,
+	public static ArrayList<Costos> simulatedAnnealing(int[] solucionInicial, double temperaturaMinima,
 			double temperaturaMaxima, int cantidadSwappings, int funcionEnfriamiento, double probabilidadAceptar,
 			Swap swap, double decrecimiento, double ponderadorVecindad) {
 		//definición de objetos y variables
@@ -26,13 +26,13 @@ public class SimulatedAnnealing {
 		int[] copiaNuevoVecinoAleatorio;
 		int[] copiaSolucionActual;
 		int[] memoriaSolucionInicial = Arrays.copyOf(solucionInicial, solucionInicial.length);
-		CostosSA costo;
+		Costos costo;
 		int [] mejorResultadoHistorico;
 		
-		ArrayList<CostosSA> costos = new ArrayList<CostosSA>();
+		ArrayList<Costos> costos = new ArrayList<Costos>();
 		long startTime = System.nanoTime();// Contador de tiempo
 
-		int tamanoVecindad = swap.calcularTamañoVecindad(swap.getMatrizF(), cantidadSwappings);
+		long tamanoVecindad = swap.calcularTamañoVecindad(swap.getMatrizF(), cantidadSwappings);
 		//int tamanoVecindad = 50;
 		
 		double temperaturaActual = temperaturaMaxima;
@@ -48,7 +48,7 @@ public class SimulatedAnnealing {
 				deltaEnergia = costoNuevaSolucion - costoActualSolucion;
 				copiaNuevoVecinoAleatorio = Arrays.copyOf(nuevoVecinoAleatorio, nuevoVecinoAleatorio.length);
 				copiaSolucionActual = Arrays.copyOf(solucionInicial, solucionInicial.length);
-				costo = new CostosSA();
+				costo = new Costos();
 				if (deltaEnergia <= 0) {
 					solucionInicial = Arrays.copyOf(nuevoVecinoAleatorio, nuevoVecinoAleatorio.length);
 					costo.setCostoActualSolucion(costoNuevaSolucion);
@@ -60,12 +60,12 @@ public class SimulatedAnnealing {
 							//costo.setMejorSolucionHistorica(mejorResultadoHistorico);
 						}else {
 							costo.setCostoMejorSolucion(costoNuevaSolucion);
-							CostosSA.mejorSolucionHistorica = copiaNuevoVecinoAleatorio;
+							Costos.mejorSolucionHistorica = copiaNuevoVecinoAleatorio;
 							//costo.setMejorSolucionHistorica(copiaNuevoVecinoAleatorio);
 						}
 					}else {
 						costo.setCostoMejorSolucion(costoNuevaSolucion);
-						CostosSA.mejorSolucionHistorica = copiaNuevoVecinoAleatorio;
+						Costos.mejorSolucionHistorica = copiaNuevoVecinoAleatorio;
 						//costo.setMejorSolucionHistorica(copiaNuevoVecinoAleatorio);
 					}
 					costos.add(costo);
@@ -82,12 +82,12 @@ public class SimulatedAnnealing {
 								//costo.setMejorSolucionHistorica(mejorResultadoHistorico);
 							}else {
 								costo.setCostoMejorSolucion(costoActualSolucion);
-								CostosSA.mejorSolucionHistorica = copiaSolucionActual;
+								Costos.mejorSolucionHistorica = copiaSolucionActual;
 								//costo.setMejorSolucionHistorica(copiaSolucionActual);
 							}
 						}else {
 							costo.setCostoMejorSolucion(costoActualSolucion);
-							CostosSA.mejorSolucionHistorica = copiaSolucionActual;
+							Costos.mejorSolucionHistorica = copiaSolucionActual;
 							//costo.setMejorSolucionHistorica(copiaSolucionActual);
 						}
 						costos.add(costo);

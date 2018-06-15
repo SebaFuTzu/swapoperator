@@ -228,13 +228,13 @@ public class Swap {
 		return listaTemp.stream().mapToInt(i -> i).toArray();
 	}
 
-	public int calcularTamañoVecindad(int[][] matriz, int cantidadSwappings) {
-		return factorial(matriz.length) / (factorial(cantidadSwappings) * factorial(matriz.length - cantidadSwappings));
+	public long calcularTamañoVecindad(int[][] matriz, int cantidadSwappings) {
+		return factorial(matriz.length) / ((factorial(cantidadSwappings) * factorial(matriz.length - cantidadSwappings)));
 		// return (matriz.length*(matriz.length-1))/2;
 	}
 
-	public static int factorial(int n) {
-		int resultado = 1;
+	public static long factorial(int n) {
+		long resultado = 1;
 		for (int i = 1; i <= n; i++) {
 			resultado *= i;
 		}
