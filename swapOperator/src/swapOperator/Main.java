@@ -1,14 +1,19 @@
 package swapOperator;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.jfree.ui.RefineryUtilities;
 
 public class Main {
+	public static final String SEPARATOR=";";
+	public static final String QUOTE="\"";
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -18,8 +23,8 @@ public class Main {
 			int cantidadSwappings = 2;
 			String Fayudantia1 = "F64.txt";
 			String Dayudantia1 = "D64.txt";
-			String path = "C:/Universidad/USACH/2018-1/Optimización en Ingeniería/Ayudantía/Metaheurísticas/Ayudantía 1/Datos/";
-			if(args[0].equalsIgnoreCase("-path")) {
+			String path = System.getProperty("user.dir")+"\\datos\\";
+			if(args[0].equalsIgnoreCase("-path")) {  // si parte con -path asume que realizaras una prueba unitaria
 				path = args[1];
 				Fayudantia1 = args[2];
 				Dayudantia1 = args[3];
@@ -40,36 +45,6 @@ public class Main {
 				int[] solucionInicial = swap.generarSolcuionInicial(swap.getMatrizD());
 				//int[] solucionInicial = new int[] {3,2,1,4};
 				swap.toStringSolcuionInicial(solucionInicial);
-				
-				//Genero una nueva solución swapped
-				//int[] solucionSwapped = swap.swapping(solucionInicial, 4);
-				//swap.toStringSolucion(solucionSwapped, 2);
-				
-				//swap.toStringSolucionSwapped(solucionInicial, cantidadSwappings);
-				
-				
-				//System.out.println("Costo solución inicial: "+swap.evaluarCostoSolucion(solucionInicial));
-				
-				//int[] listaOrdenadaF = swap.calcularListaOrdenadaSumatoriaMatriz(swap.getMatrizF(), true);
-				//swap.toStringLista(listaOrdenadaF, "ascendente F");
-				
-				//int[] listaOrdenadaD = swap.calcularListaOrdenadaSumatoriaMatriz(swap.getMatrizD(), false);
-				//swap.toStringLista(listaOrdenadaD, "descendente D");
-				
-				//int[] listaOrdenadaFUnidimensional = swap.calcularListaOrdenadaMatriz(swap.getMatrizF(), true);
-				//swap.toStringLista(listaOrdenadaFUnidimensional, "ascendente F unidimensional");
-				
-				//int[] listaOrdenadaDUnidimensional = swap.calcularListaOrdenadaMatriz(swap.getMatrizD(), false);
-				//swap.toStringLista(listaOrdenadaDUnidimensional, "descendente D unidimensional");
-				
-				//System.out.println("----------------------------------------");
-				
-				//listaOrdenadaFUnidimensional = swap.eliminarCerosLista(listaOrdenadaFUnidimensional);
-				//listaOrdenadaDUnidimensional = swap.eliminarCerosLista(listaOrdenadaDUnidimensional);
-				
-				//System.out.println("Costo solución ordenada: "+swap.evaluarCostoSolucionListasOrdenadas(listaOrdenadaFUnidimensional, listaOrdenadaDUnidimensional));
-					
-				//System.out.println("Tamaño total vecindad: "+tamañoVecindad);
 				
 				if(args[5].equals("ejercicio1")) {
 					System.out.println("######## Ejercicio 1 ########");
@@ -165,6 +140,31 @@ public class Main {
 				    RefineryUtilities.centerFrameOnScreen(demo);
 				    demo.setVisible(true);
 				}
+			}else if(args[0].equalsIgnoreCase("-dataset")){ //si parto con -dataset carga el dataste para hacer varias pruebas programadas
+				BufferedReader br = null;
+				try {
+					//dejo un espacio para cargar el dataset
+			        //br =new BufferedReader(new FileReader("dataset-SimulatedAnnealing.csv"));
+			        br =new BufferedReader(new FileReader(args[1]));
+			        String line = br.readLine();
+			        //voy leyendo linea a linea
+			        while (null!=line) {
+			        	//separo la linea por el separador
+			           String [] fields = line.split(SEPARATOR);
+			           //remuevo basura del codigo
+			           fields = removeTrailingQuotes(fields);
+			           System.out.println(Arrays.toString(fields));
+			           
+			           line = br.readLine();
+			        }
+			        
+			     } catch (Exception e) {
+			        //...
+			     } finally {
+			        if (null!=br) {
+			           br.close();
+			        }
+			     }
 			}else if(args[0].equalsIgnoreCase("-help"))	{
 				System.out.println("Ejemplo de sintaxis:");
 				System.out.println("java -jar ayudantia1metaheuristicas.jar [carga desde cmd] [path] [txt matriz F] [txt matriz distancias] [cantidad de swappings] [nombre ejercicio]");
@@ -176,6 +176,8 @@ public class Main {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
+
+		System.out.println("Fin de la ejecucion");
 	}
 	
 	public static int[][] convertirString(Stream<String> filas){
@@ -189,4 +191,13 @@ public class Main {
 		}
 		return matriz;
 	}
+	
+	
+	private static String[] removeTrailingQuotes(String[] fields) {
+	      String result[] = new String[fields.length];
+	      for (int i=0;i<result.length;i++){
+	         result[i] = fields[i].replaceAll("^"+QUOTE, "").replaceAll(QUOTE+"$", "");
+	      }
+	      return result;
+	   }
 }
