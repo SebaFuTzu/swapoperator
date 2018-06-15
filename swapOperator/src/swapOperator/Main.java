@@ -24,6 +24,7 @@ public class Main {
 			String Fayudantia1 = "F64.txt";
 			String Dayudantia1 = "D64.txt";
 			String path = System.getProperty("user.dir")+"\\datos\\";
+			
 			if(args[0].equalsIgnoreCase("-path")) {  // si parte con -path asume que realizaras una prueba unitaria
 				path = args[1];
 				Fayudantia1 = args[2];
@@ -145,6 +146,8 @@ public class Main {
 				try {
 					//dejo un espacio para cargar el dataset
 			        //br =new BufferedReader(new FileReader("dataset-SimulatedAnnealing.csv"));
+					//String Fayudantia1 = path+"F"+datos;
+					//String Dayudantia1 = path+"D"+datos;
 			        br =new BufferedReader(new FileReader(args[1]));
 			        String line = br.readLine();
 			        //voy leyendo linea a linea

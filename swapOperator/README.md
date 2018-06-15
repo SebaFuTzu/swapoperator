@@ -28,6 +28,18 @@ También pueden ejecutarlo desde eclipse agregando estos argumentos en el "Run co
 -path "C:/Universidad/USACH/2018-1/Optimización en Ingeniería/Ayudantía/Metaheurísticas/Ayudantía 1/Datos/" F128.txt D128.txt 2 ejercicio3
 `
 
+##Tipos de ejercicio
+
+ejercicio1: buscar 1 solución mejor que la inicial generada aleatoriamente, o hasta alcanzar el 50% de la vecindad
+
+ejecicio2: generar el 30% de la vecindad y luego buscar el mejor resultado, a partir de una solución inicial generada aleatoriamente
+
+ejercico3: generar el 100% de la vecindad y luego buscar el mejor resultado, a partir de una solución inicial generada aleatoriamente
+
+SA: generar óptimos en base al algoritmo de simulated annealing (Parámetros dentro del método Main y de la clase SimulatedAnnealing)
+
+TABU: genera optimos en base a tabu research
+
 ##Las instancias
 
 Se adjuntan los datos de las instancias para las pruebas en la carpeta datos, deben tener prefijo F y D de la misma instancia, se obtuvieron de
