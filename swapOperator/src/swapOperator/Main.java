@@ -148,8 +148,8 @@ public class Main {
 				    demo.setVisible(true);
 				}else if(args[5].equals("TABU")) {
 					System.out.println("######## Tabu search ########");
-					int duracionTabuList = 100;
-					int iteraciones = 80;
+					int duracionTabuList = 50;
+					int iteraciones = 20;
 					
 					if ( args.length > 6)
 						duracionTabuList = Integer.parseInt(args[6]);

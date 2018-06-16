@@ -21,11 +21,13 @@ public class TabuSearch {
 	static ItemTabu mejorSolucion;
 	static double penalizacion;
 	static Costos costo;
+	static double mejorCostoHistorico;
 
 	public static ArrayList<Double> TabuSearch(int[] solucionInicial, Swap swap, int duracionTabuList, int iteraciones) {
 		// definición de objetos y variables
 		cantidadSwappings = 2;
 		valoresSwapped = new int[cantidadSwappings];
+		mejorCostoHistorico = 0;
 
 		ArrayList<Double> costos = new ArrayList<Double>();
 		long startTime = System.nanoTime();// Contador de tiempo
@@ -37,6 +39,8 @@ public class TabuSearch {
 
 		costoSolucionInicial = swap.evaluarCostoSolucion(solucionInicial);
 		costos.add(costoSolucionInicial);
+		
+		mejorCostoHistorico=costoSolucionInicial;
 
 		while(iteraciones>0) {
 			// Genero la vecindad y los valores de las soluciones candidatas a óptimo
@@ -70,7 +74,7 @@ public class TabuSearch {
 							valoresSwapped[1] = prioridadEvaluacion.get(z).getItem2();
 							solucionActual = swap.swapping(solucionInicial, valoresSwapped);
 							costoSolucionActual = swap.evaluarCostoSolucion(solucionActual);
-							if (evaluarCriterioAspiracion(costoSolucionInicial, costoSolucionActual)) {// comparo la solución tabú con la mejor histórica
+							if (evaluarCriterioAspiracion(mejorCostoHistorico, costoSolucionActual)) {// comparo la solución tabú con la mejor histórica
 								mejorSolucion = prioridadEvaluacion.get(z);
 								listaTabu.put(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0), listaTabu.get(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0))+duracionTabuList);
 								memoriaFrecuencias.put(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0), memoriaFrecuencias.get(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0))+1);
@@ -87,6 +91,10 @@ public class TabuSearch {
 			solucionInicial = swap.swapping(solucionInicial, valoresSwapped);
 			costoSolucionInicial = swap.evaluarCostoSolucion(solucionInicial);
 			costos.add(costoSolucionInicial);
+			
+			if(mejorCostoHistorico<costoSolucionInicial) {
+				mejorCostoHistorico=costoSolucionInicial;
+			}
 			
 			iteraciones--;
 		}
