@@ -150,7 +150,7 @@ public class Main {
 					System.out.println("######## Tabu search ########");
 					int duracionTabuList = 50;
 					int iteraciones = 20;
-					int profundidadIntensificacion = 3;
+					int profundidadIntensificacion = 18;
 					
 					if ( args.length > 6)
 						duracionTabuList = Integer.parseInt(args[6]);

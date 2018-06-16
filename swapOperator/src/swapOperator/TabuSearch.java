@@ -27,7 +27,7 @@ public class TabuSearch {
 	static Costos costo;
 	static double mejorCostoHistorico;
 	static int[] copiaSolucionInicial;
-	static ItemIntensificacion[] mejoresVariablesIntensificacion;
+	static HashMap<Integer, ItemIntensificacion> mejoresVariablesIntensificacion;
 	static ArrayList<ItemIntensificacion> mejoresValoresItemsIntensificacion;
 	static int valorMaximo;
 	static int posicionMaximo;
@@ -197,7 +197,7 @@ public class TabuSearch {
 	
 	//intensificación
 	public static void realizarIntensificacion(int[] solucionInicial, int profundidadIntensificacion, Swap swap, ArrayList<Double> costos, int iteraciones, int duracionTabuList) {
-		mejoresVariablesIntensificacion = new ItemIntensificacion[profundidadIntensificacion];
+		mejoresVariablesIntensificacion = new HashMap<>();
 		mejoresValoresItemsIntensificacion = new ArrayList<>();
 		for (Entry<Integer, int[]> entry : memoriaMedianoPlazo.entrySet()) {
 			valorMaximo = 0;
@@ -213,10 +213,10 @@ public class TabuSearch {
 			mejoresValoresItemsIntensificacion.add(new ItemIntensificacion(itemMaximo, posicionMaximo, valorMaximo));
 		}		
 		Collections.sort(mejoresValoresItemsIntensificacion);
-		int i=0;
+		//int i=0;
 		for(int x=mejoresValoresItemsIntensificacion.size()-1;x>(mejoresValoresItemsIntensificacion.size()-1-profundidadIntensificacion);x--) {
-			mejoresVariablesIntensificacion[i] = mejoresValoresItemsIntensificacion.get(x);
-			i++;
+			mejoresVariablesIntensificacion.put(mejoresValoresItemsIntensificacion.get(x).getItem(), mejoresValoresItemsIntensificacion.get(x));
+			//i++;
 		}
 		
 		//inicializar mini hash con los campos que se pueden modificar
@@ -227,25 +227,19 @@ public class TabuSearch {
 	}
 	
 	// inicializamos lista de intensificación
-	public static void inicializarListaIntensificacion(int[] solucionInicial, ItemIntensificacion[] mejoresVariablesIntensificacion) {
+	public static void inicializarListaIntensificacion(int[] solucionInicial, HashMap<Integer, ItemIntensificacion> mejoresVariablesIntensificacion) {
 		Arrays.sort(solucionInicial);// ordeno la solución inicial de menor a mayor
 		listaItemsIntensificacion = new HashMap<ItemTabu, Double>();//vamos a guardar solo aquellos items dentro de una solución que podemos modificar
 		for (int i = 0; i < solucionInicial.length; i++) {
-			outerloop:
 			//saltamos aquellas posiciones e items que están fijos por la intensificacion
-			for(int k = 0; k < mejoresVariablesIntensificacion.length; k++) {
-				if(solucionInicial[i]==mejoresVariablesIntensificacion[k].getItem()) {
-					continue outerloop;
-				}
-			}		
+			if(mejoresVariablesIntensificacion.containsKey(solucionInicial[i])) {
+				continue;
+			}
 			
 			for (int j = i + 1; j < solucionInicial.length; j++) {
-				outerloop2:
 				//saltamos aquellas posiciones e items que están fijos por la intensificacion
-				for(int k2 = 0; k2 < mejoresVariablesIntensificacion.length; k2++) {
-					if(solucionInicial[i]==mejoresVariablesIntensificacion[k2].getItem()) {
-						continue outerloop2;
-					}
+				if(mejoresVariablesIntensificacion.containsKey(solucionInicial[j])) {
+					continue;
 				}
 			
 				//guardo en el hash el item que se podrá modificar en la instensificación
