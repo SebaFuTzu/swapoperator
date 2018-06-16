@@ -70,7 +70,6 @@ Para ejecutarlo por comando:
 | cantidad | 2 | cantidad de vencidad |
 | tipo | SimulatedAnnealing | Tipo de metaheuristica a usar (solo en caso de usar dataset) |
 | funcion | swap | funcion que se utilizara para tratar a los vecinos, puede ser "swap", "insercion"*, "switch"* |
-
 | tempMax | 350 |  |
 | tempMin | 1 |  |
 | funcion de enfriamiento | Geométrico |  |
@@ -99,7 +98,8 @@ Para ejecutarlo por dataset:
 `
 
 el dataset tiene la siguiente forma:
-| Dato| ejemplo| Explicacion |
+
+| Dato | ejemplo | Explicacion |
 | ----- | ---- | ---- |
 | PATH | -path | comando para hacer la prueba unitaria |
 | ruta | "D:/Proyecto Java/swapoperator/swapOperator/datos/" | ruta de la carpeta datos |
