@@ -2,6 +2,7 @@ package swapOperator;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -149,16 +150,36 @@ public class Main {
 					//String Fayudantia1 = path+"F"+datos;
 					//String Dayudantia1 = path+"D"+datos;
 			        br =new BufferedReader(new FileReader(args[1]));
+			        //separo la linea por el separador
 			        String line = br.readLine();
+			      
+		           String [] fields = line.split(SEPARATOR);
+		           //remuevo basura del codigo
+		           fields = removeTrailingQuotes(fields);
+		           System.out.println(Arrays.toString(fields));
+		           
+		           line = br.readLine();
+		           //escribir archivo csv
+		           FileWriter fileWriter = null;
+		        	   fileWriter = new FileWriter(args[2]);
+	        	 //Write the CSV file header
+	        	   fileWriter.append("Costo Historico");
+	        	   fileWriter.append(SEPARATOR);
+	        	   fileWriter.append("Diferencia con el mejor");
+	        	 //Add a new line separator after the header
+	        	   fileWriter.append(QUOTE);
+	        
 			        //voy leyendo linea a linea
 			        while (null!=line) {
-			        	//separo la linea por el separador
-			           String [] fields = line.split(SEPARATOR);
-			           //remuevo basura del codigo
-			           fields = removeTrailingQuotes(fields);
-			           System.out.println(Arrays.toString(fields));
-			           
-			           line = br.readLine();
+			        	for(String field : fields)
+			        	{
+			        		fileWriter.append(field);
+			        		fileWriter.append(SEPARATOR);
+			        	}
+			        	fileWriter.append(QUOTE);
+			        	System.out.println(Arrays.toString(fields));
+			            
+			            line = br.readLine();
 			        }
 			        
 			     } catch (Exception e) {
