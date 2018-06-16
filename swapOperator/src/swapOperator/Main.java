@@ -136,7 +136,7 @@ public class Main {
 					ArrayList<Double> costos = TabuSearch.TabuSearch(solucionInicial, swap, duracionTabuList, iteraciones);
 					
 					//plotting
-					final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos);
+					final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos, 6156); //Yo
 				    demo.pack();
 				    RefineryUtilities.centerFrameOnScreen(demo);
 				    demo.setVisible(true);

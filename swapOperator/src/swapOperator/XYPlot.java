@@ -1,9 +1,16 @@
 package swapOperator;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
@@ -41,6 +48,38 @@ public class XYPlot extends ApplicationFrame {
 		final ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
 		setContentPane(chartPanel);
+	}
+	
+	public XYPlot(final String title, final String leyenda, ArrayList<Double> costos, double bkv)  {
+
+		super(title);
+		final XYSeries series = new XYSeries(leyenda);
+		double temp=0;
+		for(int i=0;i<costos.size();i++) {
+			temp = (costos.get(i)-bkv)/bkv;
+			series.add(i, temp);
+		}
+		// Create chart
+		final XYSeriesCollection data = new XYSeriesCollection(series);
+		final JFreeChart chart = ChartFactory.createXYLineChart(title, "Iteraciones", "Cercania al optimo", data,
+				PlotOrientation.VERTICAL, true, true, false);
+		//deshabilitado mostrar el grafico en ventana
+		//final ChartPanel chartPanel = new ChartPanel(chart);
+		//chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
+		//setContentPane(chartPanel);
+		
+		// Draw png
+		try {
+			//File archivo = new File(title+".png");
+			ChartUtilities.saveChartAsPNG(new File(title+".png"), chart, 1000, 540);
+			//System.out.println("Guardado en:"+ archivo.getAbsolutePath());
+		} catch (Exception e) {
+			System.out.println("error guardar chart");
+	    } finally {
+	        //..
+	    }
+		
+		//ChartUtilities.saveChartAsJPEG("outputFile", chartPanel, 1000, 400);
 	}
 	
 	public XYPlot(final String title, final String leyenda1, String leyenda2, ArrayList<Costos> costosSA) {
