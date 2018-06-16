@@ -139,7 +139,7 @@ public class Main {
 					final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos, 6156); //Yo
 				    demo.pack();
 				    RefineryUtilities.centerFrameOnScreen(demo);
-				    demo.setVisible(true);
+				    //demo.setVisible(true);
 				}
 			}else if(args[0].equalsIgnoreCase("-dataset")){ //si parto con -dataset carga el dataste para hacer varias pruebas programadas
 				BufferedReader br = null;

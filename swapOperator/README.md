@@ -63,7 +63,7 @@ Para ejecutarlo por comando:
 
 | Dato| ejemplo| Explicacion |
 | ----- | ---- | ---- |
-| PATH* | -path | ---- |
+| PATH | -path | ---- |
 | ruta | "D:/Proyecto Java/swapoperator/swapOperator/datos/" | ---- |
 | dataset F | 64.txt | dataset usada, debe estar dentro de la carpeta datos | 
 | dataset D | 64.txt | dataset usada, debe estar dentro de la carpeta datos | 
@@ -78,6 +78,9 @@ Para ejecutarlo por comando:
 | Factor de decrecimiento | 1 |  |
 | nombre del grafico | grafico | nombre del titulo del grafico |
 
+* para pruebas manuales
+** para pruebas con dataset
+
 Este ejemplo seria en el archivo dataset.csv
 `
 SimulatedAnnealing;64.txt;swap;2;350;1;0;Aleatoria;50;1;grafico
@@ -88,19 +91,25 @@ Para ejecutarlo por comando:
 `
 -path "D:/Proyecto Java/swapoperator/swapOperator/datos/" chr22F.txt chr22D.txt 2 TABU 50 20
 `
+para ver en detalles abajo se explica en el dataset
 
+Para ejecutarlo por dataset: 
+`
+-dataset "D:/Proyecto Java/swapoperator/swapOperator/datos/dataset-TabuResearch.csv"
+`
+
+el dataset tiene la siguiente forma:
 | Dato| ejemplo| Explicacion |
 | ----- | ---- | ---- |
-| tipo | TabuSearch | Tipo de metaheuristica a usar |
-| dataset | 64.txt | dataset usada, debe estar dentro de la carpeta datos y separada anteponiendo F o D | 
-| funcion | swap | funcion que se utilizara para tratar a los vecinos, puede ser "swap", "insercion"*, "switch"* |
+| PATH | -path | ---- |
+| ruta | "D:/Proyecto Java/swapoperator/swapOperator/datos/" | ---- |
+| dataset F | 64.txt | dataset usada, debe estar dentro de la carpeta datos | 
+| dataset D | 64.txt | dataset usada, debe estar dentro de la carpeta datos | 
 | cantidad | 2 | cantidad de vencidad |
-| tempMax | 350 |  |
-| tempMin | 1 |  |
-| funcion de enfriamiento | Geométrico |  |
-| aceptacion | Aleatoria |  |
-| Factor de decrecimiento | 1 |  |
-| nombre del grafico | grafico | nombre del titulo del grafico |
+| tipo | TABU | Tipo de metaheuristica a usar |
+| duracionTabuList | 50 | ---- |
+| iteraciones | 20 | ---- |
+| titulo grafico* | "grafico bonito" | solo para el dataset de pruebas este dato, es el titulo del grafico a mostrar y del archivo log |
 
 Este ejemplo seria en el archivo dataset.csv
 `
