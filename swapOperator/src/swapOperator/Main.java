@@ -156,31 +156,89 @@ public class Main {
 		           String [] fields = line.split(SEPARATOR);
 		           //remuevo basura del codigo
 		           fields = removeTrailingQuotes(fields);
-		           System.out.println(Arrays.toString(fields));
-		           
-		           line = br.readLine();
+		           //line = br.readLine(); //activar si usamos cabecera ya q salta la primera linea
 		           //escribir archivo csv
 		           FileWriter fileWriter = null;
-		        	   fileWriter = new FileWriter(args[2]);
-	        	 //Write the CSV file header
+		           fileWriter = new FileWriter(args[2]);
+		           //Write the CSV file header
 	        	   fileWriter.append("Costo Historico");
 	        	   fileWriter.append(SEPARATOR);
 	        	   fileWriter.append("Diferencia con el mejor");
-	        	 //Add a new line separator after the header
+	        	   //Add a new line separator after the header
 	        	   fileWriter.append(QUOTE);
-	        
-			        //voy leyendo linea a linea
-			        while (null!=line) {
-			        	for(String field : fields)
+			      //creo la matriz afuera ya que si uso la misma matriz solo necesito actualizar solucion inicial y no todo
+	        	   Stream<String> matrizF;
+	        	   Stream<String> matrizD;
+	        	   path="";
+	        	   Fayudantia1="";
+	        	   Dayudantia1="";
+	        	   Swap swap;
+	        	   int[] solucionInicial;
+	        	   int[][] f;
+	        	   int[][] d;
+			        while (null!=line) {  //voy leyendo linea a linea
+			        	//cargo los datos, si son diferentes actualizo todo
+			        	if(path!=fields[0] || Fayudantia1!=fields[2] || Dayudantia1!=fields[3])
 			        	{
-			        		fileWriter.append(field);
-			        		fileWriter.append(SEPARATOR);
+			        		path = args[1];
+							Fayudantia1 = fields[2];
+							Dayudantia1 = fields[3];
+							cantidadSwappings = Integer.parseInt(args[4]);
+							
+							matrizF = Files.lines(Paths.get(path+Fayudantia1));
+							matrizD = Files.lines(Paths.get(path+Dayudantia1));
+
+							f = convertirString(matrizF);
+							d = convertirString(matrizD);		
+							
+							swap = new Swap(f, d);
+							solucionInicial = swap.generarSolcuionInicial(swap.getMatrizD());
+
+							swap.toStringSolcuionInicial(solucionInicial);
 			        	}
-			        	fileWriter.append(QUOTE);
-			        	System.out.println(Arrays.toString(fields));
-			            
+			        	else
+			        	{	//ya tengo cargado los datos, falta crear nueva solucion inicial para proxima prueba
+			        		if(f.length==0 || d.length==0)
+			        		{
+			        			matrizF = Files.lines(Paths.get(path+Fayudantia1));
+								matrizD = Files.lines(Paths.get(path+Dayudantia1));
+			        			f = convertirString(matrizF);
+								d = convertirString(matrizD);	
+			        		}
+			        		swap = new Swap(f, d);
+							solucionInicial = swap.generarSolcuionInicial(swap.getMatrizD());
+							swap.toStringSolcuionInicial(solucionInicial);
+			        	}
+			        	if(fields[5].equals("TABU")) {
+							//System.out.println("######## Tabu search ########");
+							int duracionTabuList = Integer.parseInt(fields[6]);
+							int iteraciones = Integer.parseInt(fields[7]);
+							ArrayList<Double> costos = TabuSearch.TabuSearch(solucionInicial, swap, duracionTabuList, iteraciones);
+							//plotting
+							final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos, 6156); //Yo
+						    demo.pack();
+						    RefineryUtilities.centerFrameOnScreen(demo);
+						    //demo.setVisible(true);
+						    System.out.println("Mejor solucion"+TabuSearch.mejorSolucion);
+						}
+			        	
+			        	for(int i=0; i < fields.length; i++)
+			        	{
+			        		System.out.println(fields[i]);
+			        		fileWriter.append(fields[i]);
+			        		if(i+1==fields.length) //si alcanso el final de la linea
+			        		{
+			        			fileWriter.append(QUOTE);
+			        		}
+			        		else //si no es el final de la linea a cada columa las separa por la variable
+			        		{
+			        			fileWriter.append(SEPARATOR);
+			        		}
+			        	}
+			            //Leo la siguiente linea
 			            line = br.readLine();
 			        }
+			        fileWriter.close();
 			        
 			     } catch (Exception e) {
 			        //...
