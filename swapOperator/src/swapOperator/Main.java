@@ -160,12 +160,6 @@ public class Main {
 		           //escribir archivo csv
 		           FileWriter fileWriter = null;
 		           fileWriter = new FileWriter(args[2]);
-		           //Write the CSV file header
-	        	   fileWriter.append("Costo Historico");
-	        	   fileWriter.append(SEPARATOR);
-	        	   fileWriter.append("Diferencia con el mejor");
-	        	   //Add a new line separator after the header
-	        	   fileWriter.append(QUOTE);
 			      //creo la matriz afuera ya que si uso la misma matriz solo necesito actualizar solucion inicial y no todo
 	        	   Stream<String> matrizF;
 	        	   Stream<String> matrizD;
@@ -174,16 +168,16 @@ public class Main {
 	        	   Dayudantia1="";
 	        	   Swap swap;
 	        	   int[] solucionInicial;
-	        	   int[][] f;
-	        	   int[][] d;
+	        	   int[][] f= {{0}};
+	        	   int[][] d= {{0}};
 			        while (null!=line) {  //voy leyendo linea a linea
 			        	//cargo los datos, si son diferentes actualizo todo
 			        	if(path!=fields[0] || Fayudantia1!=fields[2] || Dayudantia1!=fields[3])
 			        	{
-			        		path = args[1];
+			        		path = fields[1];
 							Fayudantia1 = fields[2];
 							Dayudantia1 = fields[3];
-							cantidadSwappings = Integer.parseInt(args[4]);
+							cantidadSwappings = Integer.parseInt(fields[4]);
 							
 							matrizF = Files.lines(Paths.get(path+Fayudantia1));
 							matrizD = Files.lines(Paths.get(path+Dayudantia1));
@@ -198,13 +192,6 @@ public class Main {
 			        	}
 			        	else
 			        	{	//ya tengo cargado los datos, falta crear nueva solucion inicial para proxima prueba
-			        		if(f.length==0 || d.length==0)
-			        		{
-			        			matrizF = Files.lines(Paths.get(path+Fayudantia1));
-								matrizD = Files.lines(Paths.get(path+Dayudantia1));
-			        			f = convertirString(matrizF);
-								d = convertirString(matrizD);	
-			        		}
 			        		swap = new Swap(f, d);
 							solucionInicial = swap.generarSolcuionInicial(swap.getMatrizD());
 							swap.toStringSolcuionInicial(solucionInicial);
@@ -219,10 +206,13 @@ public class Main {
 						    demo.pack();
 						    RefineryUtilities.centerFrameOnScreen(demo);
 						    //demo.setVisible(true);
-						    System.out.println("Mejor solucion"+TabuSearch.mejorSolucion);
+						    System.out.println("Mejor solucion"+minimo(costos));
+						    //escribo solucion en el log
+						    fileWriter.append(String.valueOf(minimo(costos)));
+						    fileWriter.append(SEPARATOR);
 						}
 			        	
-			        	for(int i=0; i < fields.length; i++)
+			        	/*for(int i=0; i < fields.length; i++)
 			        	{
 			        		System.out.println(fields[i]);
 			        		fileWriter.append(fields[i]);
@@ -234,7 +224,7 @@ public class Main {
 			        		{
 			        			fileWriter.append(SEPARATOR);
 			        		}
-			        	}
+			        	}*/
 			            //Leo la siguiente linea
 			            line = br.readLine();
 			        }
@@ -282,4 +272,16 @@ public class Main {
 	      }
 	      return result;
 	   }
+	
+	static double minimo(ArrayList<Double> costos)
+	{
+		double min=costos.get(0);
+		for(int i=1;i<costos.size();i++) {
+			if(min>costos.get(i))
+			{
+				min=costos.get(i);
+			}
+		}
+		return min;
+	}
 }

@@ -94,7 +94,7 @@ para ver en detalles abajo se explica en el dataset
 
 Para ejecutarlo por dataset: 
 `
--dataset "D:/Proyecto Java/swapoperator/swapOperator/datos/dataset-TabuResearch.csv"
+-dataset "D:/Proyecto Java/swapoperator/swapOperator/dataset-TabuResearch.csv" "tabu.log"
 `
 
 el dataset tiene la siguiente forma:
