@@ -11,6 +11,7 @@ public class TabuSearch {
 	static HashMap<ItemTabu, Integer> listaTabu;
 	static HashMap<ItemTabu, Double> memoriaFrecuencias;
 	static HashMap<ItemTabu, Double> listaCandidatos;
+	static int[][] memoriaMedianoPlazo;
 	static int[] solucionActual;
 	static int[] valoresSwapped;
 	static int cantidadSwappings;
@@ -22,6 +23,7 @@ public class TabuSearch {
 	static double penalizacion;
 	static Costos costo;
 	static double mejorCostoHistorico;
+	static int[] copiaSolucionInicial;
 
 	public static ArrayList<Double> TabuSearch(int[] solucionInicial, Swap swap, int duracionTabuList, int iteraciones) {
 		// definición de objetos y variables
@@ -33,9 +35,13 @@ public class TabuSearch {
 		long startTime = System.nanoTime();// Contador de tiempo
 
 		//tamanoVecindad = swap.calcularTamañoVecindad(swap.getMatrizF(), cantidadSwappings);
-		inicializarListaTabu(solucionInicial);
-		inicializarMemoriaFrecuencias(solucionInicial);
-		inicializarListaCandidatos(solucionInicial);
+		
+		copiaSolucionInicial = Arrays.copyOf(solucionInicial, solucionInicial.length);
+		
+		inicializarListaTabu(copiaSolucionInicial);
+		inicializarMemoriaFrecuencias(copiaSolucionInicial);
+		inicializarListaCandidatos(copiaSolucionInicial);
+		inicializarMemoriaMedianoPlazo(copiaSolucionInicial);
 
 		costoSolucionInicial = swap.evaluarCostoSolucion(solucionInicial);
 		costos.add(costoSolucionInicial);
@@ -143,11 +149,21 @@ public class TabuSearch {
 			}
 		}
 	}
+	
+	public static void inicializarMemoriaMedianoPlazo(int[] solucionInicial) {
+		Arrays.sort(solucionInicial);// ordeno la solución inicial de menor a mayor
+		memoriaMedianoPlazo = new int[solucionInicial.length][solucionInicial.length];
+		for(int i=0;i<solucionInicial.length;i++) {
+			for(int j=0;j<solucionInicial.length;j++) {
+				memoriaMedianoPlazo[i][j] = 0;
+			}
+		}
+	}
 
 	// función criterio de aspiración tabú
 	public static boolean evaluarCriterioAspiracion(double costoMejorSolucionHistorica, double costoSolucionTabu) {
 		return (costoMejorSolucionHistorica - costoSolucionTabu) > 0;// si la solución tabu es mejor que la solucion
 																		// inicial,
 																		// retorno true
-	}
+	}	
 }
