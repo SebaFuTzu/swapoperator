@@ -101,14 +101,14 @@ Para ejecutarlo por dataset:
 el dataset tiene la siguiente forma:
 | Dato| ejemplo| Explicacion |
 | ----- | ---- | ---- |
-| PATH | -path | ---- |
-| ruta | "D:/Proyecto Java/swapoperator/swapOperator/datos/" | ---- |
+| PATH | -path | comando para hacer la prueba unitaria |
+| ruta | "D:/Proyecto Java/swapoperator/swapOperator/datos/" | ruta de la carpeta datos |
 | dataset F | 64.txt | dataset usada, debe estar dentro de la carpeta datos | 
 | dataset D | 64.txt | dataset usada, debe estar dentro de la carpeta datos | 
 | cantidad | 2 | cantidad de vencidad |
 | tipo | TABU | Tipo de metaheuristica a usar |
-| duracionTabuList | 50 | ---- |
-| iteraciones | 20 | ---- |
+| duracionTabuList | 50 | duracion de la tabulist |
+| iteraciones | 20 | cantidad de iteraciones para el experimento |
 | titulo grafico* | "grafico bonito" | solo para el dataset de pruebas este dato, es el titulo del grafico a mostrar y del archivo log |
 
 Este ejemplo seria en el archivo dataset.csv
