@@ -2,16 +2,19 @@ package swapOperator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class TabuSearch {
 
 	static HashMap<ItemTabu, Integer> listaTabu;
 	static HashMap<ItemTabu, Double> memoriaFrecuencias;
 	static HashMap<ItemTabu, Double> listaCandidatos;
-	static int[][] memoriaMedianoPlazo;
+	static HashMap<Integer, int[]> memoriaMedianoPlazo;
+	static HashMap<ItemTabu, Double> listaItemsIntensificacion;
 	static int[] solucionActual;
 	static int[] valoresSwapped;
 	static int cantidadSwappings;
@@ -24,8 +27,13 @@ public class TabuSearch {
 	static Costos costo;
 	static double mejorCostoHistorico;
 	static int[] copiaSolucionInicial;
+	static ItemIntensificacion[] mejoresVariablesIntensificacion;
+	static ArrayList<ItemIntensificacion> mejoresValoresItemsIntensificacion;
+	static int valorMaximo;
+	static int posicionMaximo;
+	static int itemMaximo;
 
-	public static ArrayList<Double> TabuSearch(int[] solucionInicial, Swap swap, int duracionTabuList, int iteraciones) {
+	public static ArrayList<Double> TabuSearch(int[] solucionInicial, Swap swap, int duracionTabuList, int iteraciones, int profundidadIntensificacion) {
 		// definición de objetos y variables
 		cantidadSwappings = 2;
 		valoresSwapped = new int[cantidadSwappings];
@@ -56,6 +64,19 @@ public class TabuSearch {
 				valoresSwapped[1] = entry.getKey().getItem2();
 				solucionActual = swap.swapping(solucionInicial, valoresSwapped);
 				costoSolucionActual = swap.evaluarCostoSolucion(solucionActual);
+				
+				//para la etapa de intensificación, debo anotar en la memoria
+				//de mediano plazo, las veces en que quedan los items en una posición
+				//a causa del swap
+				for(int x=0;x<solucionActual.length;x++) {
+					if(entry.getKey().getItem1()==solucionActual[x]) {
+						guardarMemoriaMedianoPlazo(entry.getKey().getItem1(), x);
+					}
+					if(entry.getKey().getItem2()==solucionActual[x]) {
+						guardarMemoriaMedianoPlazo(entry.getKey().getItem2(), x);
+					}
+				}
+				
 				//entry.setValue(costoSolucionInicial - costoSolucionActual);// guardo la mayor diferencia como mejor costo
 				//entry.getKey().setOrden(costoSolucionInicial - costoSolucionActual);
 				penalizacion = memoriaFrecuencias.get(new ItemTabu(entry.getKey().getItem1(), entry.getKey().getItem2(),0));
@@ -95,6 +116,10 @@ public class TabuSearch {
 			valoresSwapped[0] = mejorSolucion.getItem1();
 			valoresSwapped[1] = mejorSolucion.getItem2();
 			solucionInicial = swap.swapping(solucionInicial, valoresSwapped);
+			
+			//etapa de intensificación
+			
+			
 			costoSolucionInicial = swap.evaluarCostoSolucion(solucionInicial);
 			costos.add(costoSolucionInicial);
 			
@@ -152,11 +177,9 @@ public class TabuSearch {
 	
 	public static void inicializarMemoriaMedianoPlazo(int[] solucionInicial) {
 		Arrays.sort(solucionInicial);// ordeno la solución inicial de menor a mayor
-		memoriaMedianoPlazo = new int[solucionInicial.length][solucionInicial.length];
+		memoriaMedianoPlazo = new HashMap<Integer, int[]>();
 		for(int i=0;i<solucionInicial.length;i++) {
-			for(int j=0;j<solucionInicial.length;j++) {
-				memoriaMedianoPlazo[i][j] = 0;
-			}
+			memoriaMedianoPlazo.put(solucionInicial[i], new int[solucionInicial.length]);
 		}
 	}
 
@@ -166,4 +189,69 @@ public class TabuSearch {
 																		// inicial,
 																		// retorno true
 	}	
+	
+	//método que guarda en la memoria de mediano plazo
+	public static void guardarMemoriaMedianoPlazo(int item, int posicion) {
+		memoriaMedianoPlazo.get(item)[posicion] += 1;
+	}
+	
+	//intensificación
+	public static void realizarIntensificacion(int[] solucionInicial, int profundidadIntensificacion) {
+		mejoresVariablesIntensificacion = new ItemIntensificacion[profundidadIntensificacion];
+		mejoresValoresItemsIntensificacion = new ArrayList<>();
+		for (Entry<Integer, int[]> entry : memoriaMedianoPlazo.entrySet()) {
+			valorMaximo = 0;
+			posicionMaximo = 0;
+			itemMaximo = 0;
+			for(int i=0;i<entry.getValue().length;i++) {
+				if(entry.getValue()[i]>valorMaximo) {
+					valorMaximo = entry.getValue()[i];
+					posicionMaximo = i;
+					itemMaximo = entry.getKey();
+				}
+			}
+			mejoresValoresItemsIntensificacion.add(new ItemIntensificacion(itemMaximo, posicionMaximo, valorMaximo));
+		}		
+		Collections.sort(mejoresValoresItemsIntensificacion);
+		int i=0;
+		for(int x=mejoresValoresItemsIntensificacion.size()-1;x>=(mejoresValoresItemsIntensificacion.size()-1-profundidadIntensificacion);x--) {
+			mejoresVariablesIntensificacion[i] = mejoresValoresItemsIntensificacion.get(x);
+			i++;
+		}
+		
+		//inicializar mini hash con los campos que se pueden modificar
+		inicializarListaIntensificacion(solucionInicial, mejoresVariablesIntensificacion);
+	}
+	
+	// inicializamos lista de intensificación
+	public static void inicializarListaIntensificacion(int[] solucionInicial, ItemIntensificacion[] mejoresVariablesIntensificacion) {
+		Arrays.sort(solucionInicial);// ordeno la solución inicial de menor a mayor
+		listaItemsIntensificacion = new HashMap<ItemTabu, Double>();//vamos a guardar solo aquellos items dentro de una solución que podemos modificar
+		for (int i = 0; i < solucionInicial.length; i++) {
+			outerloop:
+			//saltamos aquellas posiciones e items que están fijos por la intensificacion
+			for(int k = 0; k < mejoresVariablesIntensificacion.length; k++) {
+				if(solucionInicial[i]==mejoresVariablesIntensificacion[k].getItem()) {
+					continue outerloop;
+				}
+			}		
+			
+			for (int j = i + 1; j < solucionInicial.length; j++) {
+				outerloop2:
+				//saltamos aquellas posiciones e items que están fijos por la intensificacion
+				for(int k2 = 0; k2 < mejoresVariablesIntensificacion.length; k2++) {
+					if(solucionInicial[i]==mejoresVariablesIntensificacion[k2].getItem()) {
+						continue outerloop2;
+					}
+				}
+			
+				//guardo en el hash el item que se podrá modificar en la instensificación
+				listaItemsIntensificacion.put(new ItemTabu(solucionInicial[i], solucionInicial[j],0.0), 0.0);
+			}
+		}
+	}
+	
+	public void buscarOptimoIntensificacion() {
+		
+	}
 }
