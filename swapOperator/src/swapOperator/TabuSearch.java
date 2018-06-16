@@ -118,7 +118,7 @@ public class TabuSearch {
 			solucionInicial = swap.swapping(solucionInicial, valoresSwapped);
 			
 			//etapa de intensificación
-			
+			realizarIntensificacion(solucionInicial, profundidadIntensificacion, swap, costos, iteraciones, duracionTabuList);
 			
 			costoSolucionInicial = swap.evaluarCostoSolucion(solucionInicial);
 			costos.add(costoSolucionInicial);
@@ -196,7 +196,7 @@ public class TabuSearch {
 	}
 	
 	//intensificación
-	public static void realizarIntensificacion(int[] solucionInicial, int profundidadIntensificacion) {
+	public static void realizarIntensificacion(int[] solucionInicial, int profundidadIntensificacion, Swap swap, ArrayList<Double> costos, int iteraciones, int duracionTabuList) {
 		mejoresVariablesIntensificacion = new ItemIntensificacion[profundidadIntensificacion];
 		mejoresValoresItemsIntensificacion = new ArrayList<>();
 		for (Entry<Integer, int[]> entry : memoriaMedianoPlazo.entrySet()) {
@@ -214,13 +214,16 @@ public class TabuSearch {
 		}		
 		Collections.sort(mejoresValoresItemsIntensificacion);
 		int i=0;
-		for(int x=mejoresValoresItemsIntensificacion.size()-1;x>=(mejoresValoresItemsIntensificacion.size()-1-profundidadIntensificacion);x--) {
+		for(int x=mejoresValoresItemsIntensificacion.size()-1;x>(mejoresValoresItemsIntensificacion.size()-1-profundidadIntensificacion);x--) {
 			mejoresVariablesIntensificacion[i] = mejoresValoresItemsIntensificacion.get(x);
 			i++;
 		}
 		
 		//inicializar mini hash con los campos que se pueden modificar
 		inicializarListaIntensificacion(solucionInicial, mejoresVariablesIntensificacion);
+		
+		//realización de intensificación en sí
+		buscarOptimoIntensificacion(solucionInicial, swap, costos, iteraciones, duracionTabuList);
 	}
 	
 	// inicializamos lista de intensificación
@@ -251,7 +254,73 @@ public class TabuSearch {
 		}
 	}
 	
-	public void buscarOptimoIntensificacion() {
+	public static void buscarOptimoIntensificacion(int[] solucionInicial, Swap swap, ArrayList<Double> costos, int iteraciones, int duracionTabuList) {
+		costoSolucionInicial = swap.evaluarCostoSolucion(solucionInicial);
+		//costos.add(costoSolucionInicial);
 		
+		mejorCostoHistorico=costoSolucionInicial;
+
+		while(iteraciones>0) {
+			// Genero la vecindad y los valores de las soluciones candidatas a óptimo
+			prioridadEvaluacion = new ArrayList<>(); 
+			for (Map.Entry<ItemTabu, Double> entry : listaItemsIntensificacion.entrySet()) {
+				valoresSwapped[0] = entry.getKey().getItem1();
+				valoresSwapped[1] = entry.getKey().getItem2();
+				solucionActual = swap.swapping(solucionInicial, valoresSwapped);
+				costoSolucionActual = swap.evaluarCostoSolucion(solucionActual);
+				
+				//para la etapa de intensificación, debo anotar en la memoria
+				//de mediano plazo, las veces en que quedan los items en una posición
+				//a causa del swap
+				for(int x=0;x<solucionActual.length;x++) {
+					if(entry.getKey().getItem1()==solucionActual[x]) {
+						guardarMemoriaMedianoPlazo(entry.getKey().getItem1(), x);
+					}
+					if(entry.getKey().getItem2()==solucionActual[x]) {
+						guardarMemoriaMedianoPlazo(entry.getKey().getItem2(), x);
+					}
+				}
+				
+				//entry.setValue(costoSolucionInicial - costoSolucionActual);// guardo la mayor diferencia como mejor costo
+				//entry.getKey().setOrden(costoSolucionInicial - costoSolucionActual);
+				penalizacion = memoriaFrecuencias.get(new ItemTabu(entry.getKey().getItem1(), entry.getKey().getItem2(),0));
+				prioridadEvaluacion.add(new ItemTabu(valoresSwapped[0], valoresSwapped[1], costoSolucionInicial - costoSolucionActual - penalizacion));			
+			}
+			prioridadEvaluacion.sort(Comparator.comparingDouble(ItemTabu::getCosto));
+			
+			//calculo la mejor solución para esta iteración
+			mejorSolucion = null;
+			for (int z=prioridadEvaluacion.size()-1;z>=0;z--) {			
+				// guardo el mejor item hasta el momento
+				if (mejorSolucion == null || (prioridadEvaluacion.get(z).getCosto()-mejorSolucion.getCosto()) < 0) {
+					// verifico que no esté en la lista tabú
+					if (listaTabu.get(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0)) <= 0) {// no es tabú
+						mejorSolucion = prioridadEvaluacion.get(z);
+						listaTabu.put(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0), listaTabu.get(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0))+duracionTabuList);
+						memoriaFrecuencias.put(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0), memoriaFrecuencias.get(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0))+1);
+						break;
+					} else {// es tabú
+						if(mejorSolucion==null) {//sólo si no hay una solución ya guardada antes
+							valoresSwapped[0] = prioridadEvaluacion.get(z).getItem1();
+							valoresSwapped[1] = prioridadEvaluacion.get(z).getItem2();
+							solucionActual = swap.swapping(solucionInicial, valoresSwapped);
+							costoSolucionActual = swap.evaluarCostoSolucion(solucionActual);
+							if (evaluarCriterioAspiracion(mejorCostoHistorico, costoSolucionActual)) {// comparo la solución tabú con la mejor histórica
+								mejorSolucion = prioridadEvaluacion.get(z);
+								listaTabu.put(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0), listaTabu.get(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0))+duracionTabuList);
+								memoriaFrecuencias.put(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0), memoriaFrecuencias.get(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0))+1);
+								break;
+							}
+						}
+					}
+				}
+			}
+			if(mejorSolucion==null)
+				break;
+			
+			valoresSwapped[0] = mejorSolucion.getItem1();
+			valoresSwapped[1] = mejorSolucion.getItem2();
+			solucionInicial = swap.swapping(solucionInicial, valoresSwapped);
+		}
 	}
 }
