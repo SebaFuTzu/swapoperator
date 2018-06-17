@@ -155,11 +155,9 @@ public class Main {
 				    demo.setVisible(true);
 				}else if(args[5].equals("TABU")) {
 					System.out.println("######## Tabu search ########");
-					int duracionTabuList = 22;
+					int duracionTabuList = 50;
 					int iteraciones = 20;
-					int profundidadIntensificacion = 18;
-					boolean intensificacion = true;
-					boolean diversificacion = true;
+					int profundidadIntensificacion = 3;
 					
 					if ( args.length > 6)
 						duracionTabuList = Integer.parseInt(args[6]);
@@ -212,8 +210,6 @@ public class Main {
 	        	   int[] solucionInicial;
 	        	   int[][] f= {{0}};
 	        	   int[][] d= {{0}};
-	        	   
-	        	   
 			        while (null!=line) {  //voy leyendo linea a linea
 			        	//cargo los datos, si son diferentes actualizo todo
 			        	if(path!=fields[0] || Fayudantia1!=fields[2] || Dayudantia1!=fields[3])
@@ -244,12 +240,8 @@ public class Main {
 							//System.out.println("######## Tabu search ########");
 							int duracionTabuList = Integer.parseInt(fields[6]);
 							int iteraciones = Integer.parseInt(fields[7]);
-							int profundidadIntensificacion = Integer.parseInt(fields[8]);
-				        	boolean intensificacion = Boolean.parseBoolean(fields[9]);
-				        	boolean diversificacion = Boolean.parseBoolean(fields[10]);
-							
-							ArrayList<Double> costos = TabuSearch.TabuSearch(solucionInicial, swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion);
-
+							int profundidadIntensificacion = 3;
+							ArrayList<Double> costos = TabuSearch.TabuSearch(solucionInicial, swap, duracionTabuList, iteraciones, profundidadIntensificacion);
 							//plotting
 							final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos, 6156); //Yo
 						    demo.pack();
