@@ -45,38 +45,8 @@ public class Main {
 				
 				Swap swap = new Swap(f, d);
 				int[] solucionInicial = swap.generarSolcuionInicial(swap.getMatrizD());
-				//int[] solucionInicial = new int[] {3,2,1,4};
 				swap.toStringSolcuionInicial(solucionInicial);
 				
-				//Genero una nueva solución swapped
-				//int[] solucionSwapped = swap.swapping(solucionInicial, 4);
-				//swap.toStringSolucion(solucionSwapped, 2);
-				
-				//swap.toStringSolucionSwapped(solucionInicial, cantidadSwappings);
-				
-				
-				//System.out.println("Costo solución inicial: "+swap.evaluarCostoSolucion(solucionInicial));
-				
-				//int[] listaOrdenadaF = swap.calcularListaOrdenadaSumatoriaMatriz(swap.getMatrizF(), true);
-				//swap.toStringLista(listaOrdenadaF, "ascendente F");
-				
-				//int[] listaOrdenadaD = swap.calcularListaOrdenadaSumatoriaMatriz(swap.getMatrizD(), false);
-				//swap.toStringLista(listaOrdenadaD, "descendente D");
-				
-				//int[] listaOrdenadaFUnidimensional = swap.calcularListaOrdenadaMatriz(swap.getMatrizF(), true);
-				//swap.toStringLista(listaOrdenadaFUnidimensional, "ascendente F unidimensional");
-				
-				//int[] listaOrdenadaDUnidimensional = swap.calcularListaOrdenadaMatriz(swap.getMatrizD(), false);
-				//swap.toStringLista(listaOrdenadaDUnidimensional, "descendente D unidimensional");
-				
-				//System.out.println("----------------------------------------");
-				
-				//listaOrdenadaFUnidimensional = swap.eliminarCerosLista(listaOrdenadaFUnidimensional);
-				//listaOrdenadaDUnidimensional = swap.eliminarCerosLista(listaOrdenadaDUnidimensional);
-				
-				//System.out.println("Costo solución ordenada: "+swap.evaluarCostoSolucionListasOrdenadas(listaOrdenadaFUnidimensional, listaOrdenadaDUnidimensional));
-					
-				//System.out.println("Tamaño total vecindad: "+tamañoVecindad);
 				
 				if(args[5].equals("ejercicio1")) {
 					System.out.println("######## Ejercicio 1 ########");
@@ -261,19 +231,6 @@ public class Main {
 						    fileWriter.append(SEPARATOR);
 						}
 			        	
-			        	/*for(int i=0; i < fields.length; i++)
-			        	{
-			        		System.out.println(fields[i]);
-			        		fileWriter.append(fields[i]);
-			        		if(i+1==fields.length) //si alcanso el final de la linea
-			        		{
-			        			fileWriter.append(QUOTE);
-			        		}
-			        		else //si no es el final de la linea a cada columa las separa por la variable
-			        		{
-			        			fileWriter.append(SEPARATOR);
-			        		}
-			        	}*/
 			            //Leo la siguiente linea
 			            line = br.readLine();
 			        }
