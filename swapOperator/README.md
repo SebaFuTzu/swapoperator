@@ -46,3 +46,6 @@ Ultimo ejemplo linea de comando
 
 Argumentos Simmulated Annealing instancia 64:
 -path "C:/Users/SebaFuTzu/git/swapOperatorLocal/swapOperator/datos/" F64.txt D64.txt 2 SA 1 1000 0.95 1 0.3 2
+
+Argumentos Tabu Search instancia de 64:
+-path "C:/Users/SebaFuTzu/git/swapOperatorLocal/swapOperator/datos/" F64.txt D64.txt 2 TABU 22 500 18 false true
