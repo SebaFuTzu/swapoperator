@@ -6,6 +6,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -25,6 +28,8 @@ public class Main {
 			String Fayudantia1 = "F64.txt";
 			String Dayudantia1 = "D64.txt";
 			String path = System.getProperty("user.dir")+"\\datos\\";
+			
+			DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 			
 			if(args[0].equalsIgnoreCase("-path")) {  // si parte con -path asume que realizaras una prueba unitaria
 				path = args[1];
@@ -59,9 +64,10 @@ public class Main {
 					
 					//plotting
 					final XYPlot demo = new XYPlot("Gráfico optimización con operador swap "+args[5], "Costo", costos);
-				    demo.pack();
-				    RefineryUtilities.centerFrameOnScreen(demo);
-				    demo.setVisible(true);
+					
+				    //demo.pack();
+				    //RefineryUtilities.centerFrameOnScreen(demo);
+				    //demo.setVisible(true);
 				}else if(args[5].equals("ejercicio3")) {
 					System.out.println("######## Ejercicio 3 ########");
 					int tamañoVecindad = (int)swap.calcularTamañoVecindad(f, cantidadSwappings);
@@ -69,9 +75,9 @@ public class Main {
 					
 					//plotting
 					final XYPlot demo = new XYPlot("Gráfico optimización con operador swap "+args[5], "Costo", costos);
-				    demo.pack();
-				    RefineryUtilities.centerFrameOnScreen(demo);
-				    demo.setVisible(true);
+				    //demo.pack();
+				    //RefineryUtilities.centerFrameOnScreen(demo);
+				    //demo.setVisible(true);
 				}else if(args[5].equals("SA")) {
 					System.out.println("######## Simulated Annealing ########");
 
@@ -120,9 +126,9 @@ public class Main {
 					
 					//plotting
 					final XYPlot demo = new XYPlot("Gráfico optimización Simulated Annealing", "Costo sin memoria", "Costo con memoria", costos);
-				    demo.pack();
-				    RefineryUtilities.centerFrameOnScreen(demo);
-				    demo.setVisible(true);
+				    //demo.pack();
+				    //RefineryUtilities.centerFrameOnScreen(demo);
+				    //demo.setVisible(true);
 				}else if(args[5].equals("TABU")) {
 					System.out.println("######## Tabu search ########");
 					int duracionTabuList = 22;
@@ -149,9 +155,9 @@ public class Main {
 					ArrayList<Double> costos = TabuSearch.TabuSearch(solucionInicial, swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion);
 					
 					//plotting
-					final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos, 6156); //Yo
-				    demo.pack();
-				    RefineryUtilities.centerFrameOnScreen(demo);
+					final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos, 6156, "costo"); //Yo
+				    //demo.pack();
+				    //RefineryUtilities.centerFrameOnScreen(demo);
 				    //demo.setVisible(true);
 				}
 			}else if(args[0].equalsIgnoreCase("-dataset")){ //si parto con -dataset carga el dataste para hacer varias pruebas programadas
@@ -171,7 +177,7 @@ public class Main {
 		           //line = br.readLine(); //activar si usamos cabecera ya q salta la primera linea
 		           //escribir archivo csv
 		           FileWriter fileWriter = null;
-		           fileWriter = new FileWriter(args[2]);
+		           
 			      //creo la matriz afuera ya que si uso la misma matriz solo necesito actualizar solucion inicial y no todo
 	        	   Stream<String> matrizF;
 	        	   Stream<String> matrizD;
@@ -182,7 +188,8 @@ public class Main {
 	        	   int[] solucionInicial;
 	        	   int[][] f= {{0}};
 	        	   int[][] d= {{0}};
-	        	   
+	        	   int cantidadExperimentos = 1;
+	        	   int mejorMaximoConocido = 6155;
 	        	   
 			        while (null!=line) {  //voy leyendo linea a linea
 			        	//cargo los datos, si son diferentes actualizo todo
@@ -199,10 +206,6 @@ public class Main {
 							f = convertirString(matrizF);
 							d = convertirString(matrizD);		
 							
-							swap = new Swap(f, d);
-							solucionInicial = swap.generarSolcuionInicial(swap.getMatrizD());
-
-							swap.toStringSolcuionInicial(solucionInicial);
 			        	}
 			        	else
 			        	{	//ya tengo cargado los datos, falta crear nueva solucion inicial para proxima prueba
@@ -217,18 +220,35 @@ public class Main {
 							int profundidadIntensificacion = Integer.parseInt(fields[8]);
 				        	boolean intensificacion = Boolean.parseBoolean(fields[9]);
 				        	boolean diversificacion = Boolean.parseBoolean(fields[10]);
-							
-							ArrayList<Double> costos = TabuSearch.TabuSearch(solucionInicial, swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion);
-
-							//plotting
-							final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos, 6156); //Yo
-						    demo.pack();
-						    RefineryUtilities.centerFrameOnScreen(demo);
-						    //demo.setVisible(true);
-						    System.out.println("Mejor solucion"+minimo(costos));
-						    //escribo solucion en el log
-						    fileWriter.append(String.valueOf(minimo(costos)));
-						    fileWriter.append(SEPARATOR);
+				        	
+				        	cantidadExperimentos = Integer.parseInt(fields[11]);
+				        	mejorMaximoConocido = Integer.parseInt(fields[12]);
+				        	String fileName = df.format(new java.util.Date())  ; //+ ;
+				        	
+				        	fileWriter = new FileWriter(args[2] + fileName  +  ".log" );
+				        	
+				        	for (int i = 0; i < cantidadExperimentos; i++) { 
+				        	
+								swap = new Swap(f, d);
+								solucionInicial = swap.generarSolcuionInicial(swap.getMatrizD());
+	
+								swap.toStringSolcuionInicial(solucionInicial);
+									
+								ArrayList<Double> costos = TabuSearch.TabuSearch(solucionInicial, swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion);
+	
+								//plotting
+								final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1)); //Yo
+							    //demo.pack();
+							    
+							   
+							    
+							    //RefineryUtilities.centerFrameOnScreen(demo);
+							    //demo.setVisible(true);
+							    System.out.println("Mejor solucion"+minimo(costos));
+							    //escribo solucion en el log
+							    fileWriter.append(String.valueOf(minimo(costos)));
+							    fileWriter.append(SEPARATOR);
+			        		}
 						}
 			        	
 			            //Leo la siguiente linea

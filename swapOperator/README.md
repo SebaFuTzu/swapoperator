@@ -50,3 +50,10 @@ Argumentos Simmulated Annealing instancia 64:
 
 Argumentos Tabu Search instancia de 64:
 -path "C:/Users/SebaFuTzu/git/swapOperatorLocal/swapOperator/datos/" F64.txt D64.txt 2 TABU 22 500 18 false true
+
+##Ultimas modificaciones al formato del CSV
+Se agrega parametro con cantidad de iteraciones a correr del experimento
+Se agrega parametro con mejor optimo encontrado 
+
+-path;./datos/;F64.txt;D64.txt;2;TABU;50;20;18;true;true;5;116
+

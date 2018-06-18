@@ -1,1 +1,1 @@
--path;./datos/;chr22F.txt;chr22D.txt;2;TABU;50;20;3;true;true
+-path;./datos/;F64.txt;D64.txt;2;TABU;50;20;18;true;true;1000;116

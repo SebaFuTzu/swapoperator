@@ -1,12 +1,7 @@
 package swapOperator;
 
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-
-import javax.imageio.ImageIO;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -15,9 +10,8 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.ui.ApplicationFrame;
 
-public class XYPlot extends ApplicationFrame {
+public class XYPlot {// extends ApplicationFrame {
 
 	/**
 	 * A demonstration application showing an XY series containing a null value.
@@ -27,7 +21,7 @@ public class XYPlot extends ApplicationFrame {
 	 */
 	public XYPlot(final String title, final String leyenda, ArrayList<Double> costos) {
 
-		super(title);
+		//super(title);
 		final XYSeries series = new XYSeries(leyenda);
 		for(int i=0;i<costos.size();i++) {
 			series.add(i, costos.get(i));
@@ -47,12 +41,12 @@ public class XYPlot extends ApplicationFrame {
 
 		final ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
-		setContentPane(chartPanel);
+		//setContentPane(chartPanel);
 	}
 	
-	public XYPlot(final String title, final String leyenda, ArrayList<Double> costos, double bkv)  {
+	public XYPlot(final String title, final String leyenda, ArrayList<Double> costos, double bkv, String fileName)  {
 
-		super(title);
+		//super(title);
 		final XYSeries series = new XYSeries(leyenda);
 		double temp=0;
 		for(int i=0;i<costos.size();i++) {
@@ -71,7 +65,7 @@ public class XYPlot extends ApplicationFrame {
 		// Draw png
 		try {
 			//File archivo = new File(title+".png");
-			ChartUtilities.saveChartAsPNG(new File(title+".png"), chart, 1000, 540);
+			ChartUtilities.saveChartAsPNG(new File(fileName+".png"), chart, 1000, 540);
 			//System.out.println("Guardado en:"+ archivo.getAbsolutePath());
 		} catch (Exception e) {
 			System.out.println("error guardar chart");
@@ -84,7 +78,7 @@ public class XYPlot extends ApplicationFrame {
 	
 	public XYPlot(final String title, final String leyenda1, String leyenda2, ArrayList<Costos> costosSA) {
 
-		super(title);
+		//super(title);
 		final XYSeries series1 = new XYSeries(leyenda1);
 		final XYSeries series2 = new XYSeries(leyenda2);
 		for(int i=0;i<costosSA.size();i++) {
@@ -99,6 +93,6 @@ public class XYPlot extends ApplicationFrame {
 
 		final ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
-		setContentPane(chartPanel);
+		//setContentPane(chartPanel);
 	}
 }
