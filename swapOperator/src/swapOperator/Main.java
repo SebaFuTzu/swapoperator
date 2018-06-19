@@ -254,9 +254,12 @@ public class Main {
 
 							//fileWriter = new FileWriter(args[2] + fileName  +  ".log" );
 							System.out.println( dfLog.format(new java.util.Date()) + " Linea de experimento [" + cantLines + "]");
-
+								
 							for (int i = 0; i < cantidadExperimentos; i++) { 
 
+								long startTime = System.nanoTime();// Contador de tiempo
+
+								// tiempo de ejecución
 								System.out.println(dfLog.format(new java.util.Date()) + " Experimento [" + cantidadExperimentos + "]");
 
 								swap = new Swap(f, d);
@@ -280,6 +283,16 @@ public class Main {
 								//fileWriter.append(QUOTE);
 								//RefineryUtilities.centerFrameOnScreen(demo);
 								//demo.setVisible(true);}
+								long endTime = System.nanoTime();
+								long totalTime = (endTime - startTime) / 1000000;
+								System.out.println("tiempo ejecución: " + totalTime + " milisegundos");
+								fileWriter.write(fileName);
+								fileWriter.write(SEPARATOR);
+								fileWriter.write(String.valueOf(minimoCostos(costos)));
+								fileWriter.write(SEPARATOR);
+								fileWriter.write(String.valueOf(totalTime));
+								fileWriter.write(System.lineSeparator());
+
 							}
 						}else if(fields[5].equals("TABU")) {
 							//System.out.println("######## Tabu search ########");
@@ -296,6 +309,8 @@ public class Main {
 							System.out.println(dfLog.format(new java.util.Date()) + " Linea de experimento [" + cantLines + "]");
 
 							for (int i = 0; i < cantidadExperimentos; i++) { 
+
+								long startTime = System.nanoTime();// Contador de tiempo
 
 								System.out.println(dfLog.format(new java.util.Date()) + " Experimento [" + cantidadExperimentos + "]");
 
@@ -314,11 +329,18 @@ public class Main {
 								
 								
 								System.out.println("Mejor solucion: "+minimo(costos));
+								
+								long endTime = System.nanoTime();
+								long totalTime = (endTime - startTime) / 1000000;
+								System.out.println("tiempo ejecución: " + totalTime + " milisegundos");
+
 
 								fileWriter.write(fileName);
 								fileWriter.write(SEPARATOR);
 								fileWriter.write(String.valueOf(minimo(costos)));
-								fileWriter.write("\n");
+								fileWriter.write(SEPARATOR);
+								fileWriter.write(String.valueOf(totalTime));								
+								fileWriter.write(System.lineSeparator());
 								
 							}
 						}
@@ -389,5 +411,16 @@ public class Main {
 		return min;
 	}
 
+	static double minimoCostos(ArrayList<Costos> costos)
+	{
+		double min=costos.get(0).getCostoMejorSolucion();
+		for(int i=1;i<costos.size();i++) {
+			if(min>costos.get(i).getCostoMejorSolucion())
+			{
+				min=costos.get(i).getCostoMejorSolucion();
+			}
+		}
+		return min;
+	}
 
 }
