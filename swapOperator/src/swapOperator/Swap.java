@@ -229,8 +229,8 @@ public class Swap {
 	}
 
 	public long calcularTamañoVecindad(int[][] matriz, int cantidadSwappings) {
-		return factorial(matriz.length) / ((factorial(cantidadSwappings) * factorial(matriz.length - cantidadSwappings)));
-		// return (matriz.length*(matriz.length-1))/2;
+		//return factorial(matriz.length) / ((factorial(cantidadSwappings) * factorial(matriz.length - cantidadSwappings)));
+		return (matriz.length*(matriz.length-1))/2;
 	}
 
 	public static long factorial(int n) {
