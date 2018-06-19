@@ -260,7 +260,7 @@ public class Main {
 								long startTime = System.nanoTime();// Contador de tiempo
 
 								// tiempo de ejecución
-								System.out.println(dfLog.format(new java.util.Date()) + " Experimento [" + cantidadExperimentos + "]");
+								System.out.println(dfLog.format(new java.util.Date()) + " Experimento [" + i + "]");
 
 								swap = new Swap(f, d);
 								solucionInicial = swap.generarSolcuionInicial(swap.getMatrizD());
@@ -312,7 +312,7 @@ public class Main {
 
 								long startTime = System.nanoTime();// Contador de tiempo
 
-								System.out.println(dfLog.format(new java.util.Date()) + " Experimento [" + cantidadExperimentos + "]");
+								System.out.println(dfLog.format(new java.util.Date()) + " Experimento [" + i + "]");
 
 								swap = new Swap(f, d);
 								solucionInicial = swap.generarSolcuionInicial(swap.getMatrizD());
