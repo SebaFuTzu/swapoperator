@@ -83,7 +83,7 @@ public class XYPlotSpeed {// extends ApplicationFrame {
 		//ChartUtilities.saveChartAsJPEG("outputFile", chartPanel, 1000, 400);
 	}
 	
-	public XYPlotSpeed(final String title, final String leyenda1, String leyenda2, ArrayList<Costos> costosSA) {
+	public void Plot(final String title, final String leyenda1, String leyenda2, ArrayList<Costos> costosSA) {
 
 		//super(title);
 		final XYSeries series1 = new XYSeries(leyenda1);
@@ -103,7 +103,7 @@ public class XYPlotSpeed {// extends ApplicationFrame {
 		//setContentPane(chartPanel);
 	}
 	
-	public XYPlotSpeed(final String title, final String leyenda1, String leyenda2, ArrayList<Costos> costosSA, double bkv, String fileName) {
+	public void Plot(final String title, final String leyenda1, String leyenda2, ArrayList<Costos> costosSA, double bkv, String fileName) {
 
 		//super(title);
 		final XYSeries series1 = new XYSeries(leyenda1);

@@ -27,6 +27,7 @@ public class Main {
 			String path = System.getProperty("user.dir")+"\\datos\\";
 
 			DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+			DateFormat dfLog = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 			if(args[0].equalsIgnoreCase("-path")) {  // si parte con -path asume que realizaras una prueba unitaria
 				path = args[1];
@@ -188,7 +189,7 @@ public class Main {
 					int mejorMaximoConocido = 6155;
 					String fileName = df.format(new java.util.Date())  ; //+ ;
 					FileWriter fileWriter = new FileWriter(args[2] + fileName  +  ".log" );
-					FileWriter fichero = null;
+					//FileWriter fichero = null;
 					//PrintWriter pw = null;
 					//fichero = new FileWriter(args[2]  +  ".log");
 					//pw = new PrintWriter(fichero);
@@ -197,7 +198,7 @@ public class Main {
 					while (null!=line) {  //voy leyendo linea a linea
 						//cargo los datos, si son diferentes actualizo todo
 						cantLines++;
-						if(path!=fields[0] || Fayudantia1!=fields[2] || Dayudantia1!=fields[3])
+						if(path!=fields[1] || Fayudantia1!=fields[2] || Dayudantia1!=fields[3])
 						{
 							path = fields[1];
 							Fayudantia1 = fields[2];
@@ -212,10 +213,12 @@ public class Main {
 
 						}
 						else
-						{	//ya tengo cargado los datos, falta crear nueva solucion inicial para proxima prueba
-							swap = new Swap(f, d);
-							solucionInicial = swap.generarSolcuionInicial(swap.getMatrizD());
-							swap.toStringSolcuionInicial(solucionInicial);
+						{	
+							//Se quitan estas lineas porque cada experimento hace sus propios SWAP y genera las soluciones
+							//ya tengo cargado los datos, falta crear nueva solucion inicial para proxima prueba
+							//swap = new Swap(f, d);
+							//solucionInicial = swap.generarSolcuionInicial(swap.getMatrizD());
+							//swap.toStringSolcuionInicial(solucionInicial);
 						}
 						if(fields[5].equals("SA")) {
 							//System.out.println("######## Simulated Annealing ########");
@@ -227,48 +230,34 @@ public class Main {
 							double decrecimiento = SimulatedAnnealing.RAZON_DECRECIMIENTO_ARITMETICO;
 							double ponderadorVecindad = 1;
 
+							//#¿NOMBRE?;./datos/;F64.txt;D64.txt;2;SA;1;1000;0.95;1;0.3;2;100;116
+							temperaturaMinima = Double.parseDouble(fields[6]);
 
-							if ( fields.length > 6)
-								temperaturaMinima = Double.parseDouble(fields[6]);
+							temperaturaMaxima = Double.parseDouble(fields[7]);
 
-							if ( fields.length > 7)
-								temperaturaMaxima = Double.parseDouble(fields[7]);
+							probabilidadAceptar = Double.parseDouble(fields[8]);
 
-							if ( fields.length > 8)
-								probabilidadAceptar = Double.parseDouble(fields[8]);
+							funcionEnfriamiento = Integer.parseInt(fields[9]);
 
-							if ( fields.length > 9 )
-								funcionEnfriamiento = Integer.parseInt(fields[9]);
-							else { 
-								switch (funcionEnfriamiento) {
-								case SimulatedAnnealing.FUNCION_ENFRIAMIENTO_ARITMETICO:
-									decrecimiento = SimulatedAnnealing.RAZON_DECRECIMIENTO_ARITMETICO;
-									break;
-								case SimulatedAnnealing.FUNCION_ENFRIAMIENTO_GEOMETRICO:
-									decrecimiento = SimulatedAnnealing.PORCENTAJE_RAZON_DECRECIMIENTO_GEOMETRICO;
-									break;
-								case SimulatedAnnealing.FUNCION_ENFRIAMIENTO_LOGARITMICO:
-									decrecimiento = SimulatedAnnealing.CONSTANTE_DECRECIMIENTO_LOGARITMICO;
-									break;
-								}
-							}
+							decrecimiento = Double.parseDouble(fields[10]);
 
-							if ( args.length > 11 ) 
-								ponderadorVecindad = Double.parseDouble(fields[11]);
+							ponderadorVecindad = Double.parseDouble(fields[11]);
 
 
 							//plotting
 							//final XYPlot demo = new XYPlot("Gráfico optimización Simulated Annealing", "Costo sin memoria", "Costo con memoria", costos);
 
 
-							decrecimiento = Double.parseDouble(fields[10]);
-							cantidadExperimentos = Integer.parseInt(fields[11]);
-							mejorMaximoConocido = Integer.parseInt(fields[12]);
+							cantidadExperimentos = Integer.parseInt(fields[12]);
+							mejorMaximoConocido = Integer.parseInt(fields[13]);
 							//String fileName = df.format(new java.util.Date())  ; //+ ;
 
 							//fileWriter = new FileWriter(args[2] + fileName  +  ".log" );
+							System.out.println( dfLog.format(new java.util.Date()) + " Linea de experimento [" + cantLines + "]");
 
 							for (int i = 0; i < cantidadExperimentos; i++) { 
+
+								System.out.println(dfLog.format(new java.util.Date()) + " Experimento [" + cantidadExperimentos + "]");
 
 								swap = new Swap(f, d);
 								solucionInicial = swap.generarSolcuionInicial(swap.getMatrizD());
@@ -280,7 +269,10 @@ public class Main {
 
 
 								//plotting
-								final XYPlot demo = new XYPlot("Gráfico optimización Simulated Annealing", "Costo sin memoria", "Costo con memoria", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1)); //Yo
+								//final XYPlot demo = new XYPlot("Gráfico optimización Simulated Annealing", "Costo sin memoria", "Costo con memoria", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1)); //Yo
+								
+								plot.Plot("Gráfico optimización Simulated Annealing", "Costo sin memoria", "Costo con memoria", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1)); 
+								
 								//demo.pack();
 								//System.out.println("Mejor solucion"+minimo(costos));
 								//escribo solucion en el log
@@ -301,11 +293,11 @@ public class Main {
 							mejorMaximoConocido = Integer.parseInt(fields[12]);
 							//String fileName = df.format(new java.util.Date())  ; //+ ;
 
-							System.out.println("Linea de experimento [" + cantLines + "]");
+							System.out.println(dfLog.format(new java.util.Date()) + " Linea de experimento [" + cantLines + "]");
 
 							for (int i = 0; i < cantidadExperimentos; i++) { 
 
-								System.out.println("Experimento [" + cantidadExperimentos + "]");
+								System.out.println(dfLog.format(new java.util.Date()) + " Experimento [" + cantidadExperimentos + "]");
 
 								swap = new Swap(f, d);
 								solucionInicial = swap.generarSolcuionInicial(swap.getMatrizD());
@@ -333,6 +325,12 @@ public class Main {
 
 						//Leo la siguiente linea
 						line = br.readLine();
+						if (line!= null) { 
+							fields = line.split(SEPARATOR);
+							//remuevo basura del codigo
+							fields = removeTrailingQuotes(fields);
+						}
+
 					}
 					fileWriter.flush();
 					fileWriter.close();
