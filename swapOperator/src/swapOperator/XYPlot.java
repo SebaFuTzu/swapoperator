@@ -65,7 +65,7 @@ public class XYPlot {// extends ApplicationFrame {
 		// Draw png
 		try {
 			//File archivo = new File(title+".png");
-			ChartUtilities.saveChartAsPNG(new File(fileName+".png"), chart, 1000, 540);
+			ChartUtilities.saveChartAsPNG(new File("img/"+fileName+".png"), chart, 1000, 540);
 			//System.out.println("Guardado en:"+ archivo.getAbsolutePath());
 		} catch (Exception e) {
 			System.out.println("error guardar chart");
@@ -93,6 +93,35 @@ public class XYPlot {// extends ApplicationFrame {
 
 		final ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
+		//setContentPane(chartPanel);
+	}
+	
+	public XYPlot(final String title, final String leyenda1, String leyenda2, ArrayList<Costos> costosSA, double bkv, String fileName) {
+
+		//super(title);
+		final XYSeries series1 = new XYSeries(leyenda1);
+		final XYSeries series2 = new XYSeries(leyenda2);
+		for(int i=0;i<costosSA.size();i++) {
+			series1.add(i, (costosSA.get(i).getCostoActualSolucion()-bkv)/bkv);
+			series2.add(i, (costosSA.get(i).getCostoMejorSolucion()-bkv)/bkv);
+		}
+		final XYSeriesCollection data = new XYSeriesCollection();
+		data.addSeries(series1);
+		data.addSeries(series2);
+		final JFreeChart chart = ChartFactory.createXYLineChart(title, "X", "Y", data,
+				PlotOrientation.VERTICAL, true, true, false);
+
+		//final ChartPanel chartPanel = new ChartPanel(chart);
+		//chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
+		try {
+			//File archivo = new File(title+".png");
+			ChartUtilities.saveChartAsPNG(new File("img/"+fileName+".png"), chart, 1000, 540);
+			//System.out.println("Guardado en:"+ archivo.getAbsolutePath());
+		} catch (Exception e) {
+			System.out.println("error guardar chart");
+	    } finally {
+	        //..
+	    }
 		//setContentPane(chartPanel);
 	}
 }

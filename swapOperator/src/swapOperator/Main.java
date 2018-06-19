@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -176,7 +177,6 @@ public class Main {
 		           fields = removeTrailingQuotes(fields);
 		           //line = br.readLine(); //activar si usamos cabecera ya q salta la primera linea
 		           //escribir archivo csv
-		           FileWriter fileWriter = null;
 		           
 			      //creo la matriz afuera ya que si uso la misma matriz solo necesito actualizar solucion inicial y no todo
 	        	   Stream<String> matrizF;
@@ -190,7 +190,12 @@ public class Main {
 	        	   int[][] d= {{0}};
 	        	   int cantidadExperimentos = 1;
 	        	   int mejorMaximoConocido = 6155;
-	        	   
+	        	   String fileName = df.format(new java.util.Date())  ; //+ ;
+	        	   FileWriter fileWriter = new FileWriter(args[2] + fileName  +  ".log" );
+	        	   FileWriter fichero = null;
+	               PrintWriter pw = null;
+	               fichero = new FileWriter(args[2]  +  ".log");
+	               pw = new PrintWriter(fichero);
 			        while (null!=line) {  //voy leyendo linea a linea
 			        	//cargo los datos, si son diferentes actualizo todo
 			        	if(path!=fields[0] || Fayudantia1!=fields[2] || Dayudantia1!=fields[3])
@@ -213,7 +218,79 @@ public class Main {
 							solucionInicial = swap.generarSolcuionInicial(swap.getMatrizD());
 							swap.toStringSolcuionInicial(solucionInicial);
 			        	}
-			        	if(fields[5].equals("TABU")) {
+			        	if(fields[5].equals("SA")) {
+							//System.out.println("######## Simulated Annealing ########");
+
+							double temperaturaMinima = 0;
+							double temperaturaMaxima = 350;
+							double probabilidadAceptar = 0.99;
+							int funcionEnfriamiento = SimulatedAnnealing.FUNCION_ENFRIAMIENTO_GEOMETRICO;
+							double decrecimiento = SimulatedAnnealing.RAZON_DECRECIMIENTO_ARITMETICO;
+							double ponderadorVecindad = 1;
+							
+							
+							if ( fields.length > 6)
+								temperaturaMinima = Double.parseDouble(fields[6]);
+
+							if ( fields.length > 7)
+								temperaturaMaxima = Double.parseDouble(fields[7]);
+							
+							if ( fields.length > 8)
+								probabilidadAceptar = Double.parseDouble(fields[8]);
+							
+							if ( fields.length > 9 )
+								funcionEnfriamiento = Integer.parseInt(fields[9]);
+							else { 
+								switch (funcionEnfriamiento) {
+								case SimulatedAnnealing.FUNCION_ENFRIAMIENTO_ARITMETICO:
+									decrecimiento = SimulatedAnnealing.RAZON_DECRECIMIENTO_ARITMETICO;
+									break;
+								case SimulatedAnnealing.FUNCION_ENFRIAMIENTO_GEOMETRICO:
+									decrecimiento = SimulatedAnnealing.PORCENTAJE_RAZON_DECRECIMIENTO_GEOMETRICO;
+									break;
+								case SimulatedAnnealing.FUNCION_ENFRIAMIENTO_LOGARITMICO:
+									decrecimiento = SimulatedAnnealing.CONSTANTE_DECRECIMIENTO_LOGARITMICO;
+									break;
+								}
+							}
+							
+							if ( args.length > 11 ) 
+								ponderadorVecindad = Double.parseDouble(fields[11]);
+							
+							
+							//plotting
+							//final XYPlot demo = new XYPlot("Gráfico optimización Simulated Annealing", "Costo sin memoria", "Costo con memoria", costos);
+
+							
+							decrecimiento = Double.parseDouble(fields[10]);
+							cantidadExperimentos = Integer.parseInt(fields[11]);
+				        	mejorMaximoConocido = Integer.parseInt(fields[12]);
+				        	//String fileName = df.format(new java.util.Date())  ; //+ ;
+				        	
+				        	//fileWriter = new FileWriter(args[2] + fileName  +  ".log" );
+				        	
+				        	for (int i = 0; i < cantidadExperimentos; i++) { 
+				        	
+								swap = new Swap(f, d);
+								solucionInicial = swap.generarSolcuionInicial(swap.getMatrizD());
+	
+								swap.toStringSolcuionInicial(solucionInicial);
+									
+								ArrayList<Costos> costos = SimulatedAnnealing.simulatedAnnealing(solucionInicial, temperaturaMinima, temperaturaMaxima, cantidadSwappings, 
+										funcionEnfriamiento, probabilidadAceptar, swap, decrecimiento, ponderadorVecindad);
+								
+	
+								//plotting
+								final XYPlot demo = new XYPlot("Gráfico optimización Simulated Annealing", "Costo sin memoria", "Costo con memoria", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1)); //Yo
+							    //demo.pack();
+								//System.out.println("Mejor solucion"+minimo(costos));
+							    //escribo solucion en el log
+							    //fileWriter.append(String.valueOf(minimo(costos)));
+							    //fileWriter.append(QUOTE);
+						    //RefineryUtilities.centerFrameOnScreen(demo);
+						    //demo.setVisible(true);}
+				        	}
+						}else if(fields[5].equals("TABU")) {
 							//System.out.println("######## Tabu search ########");
 							int duracionTabuList = Integer.parseInt(fields[6]);
 							int iteraciones = Integer.parseInt(fields[7]);
@@ -223,11 +300,12 @@ public class Main {
 				        	
 				        	cantidadExperimentos = Integer.parseInt(fields[11]);
 				        	mejorMaximoConocido = Integer.parseInt(fields[12]);
-				        	String fileName = df.format(new java.util.Date())  ; //+ ;
+				        	//String fileName = df.format(new java.util.Date())  ; //+ ;
 				        	
-				        	fileWriter = new FileWriter(args[2] + fileName  +  ".log" );
+				        	
 				        	
 				        	for (int i = 0; i < cantidadExperimentos; i++) { 
+				        		
 				        	
 								swap = new Swap(f, d);
 								solucionInicial = swap.generarSolcuionInicial(swap.getMatrizD());
@@ -235,7 +313,8 @@ public class Main {
 								swap.toStringSolcuionInicial(solucionInicial);
 									
 								ArrayList<Double> costos = TabuSearch.TabuSearch(solucionInicial, swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion);
-	
+
+					        	fileName = df.format(new java.util.Date())  ; //+ ;
 								//plotting
 								final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1)); //Yo
 							    //demo.pack();
@@ -244,10 +323,19 @@ public class Main {
 							    
 							    //RefineryUtilities.centerFrameOnScreen(demo);
 							    //demo.setVisible(true);
-							    System.out.println("Mejor solucion"+minimo(costos));
-							    //escribo solucion en el log
-							    fileWriter.append(String.valueOf(minimo(costos)));
+							    System.out.println("Mejor solucion: "+minimo(costos));
+
+							    //escribo solucion en el log*******
+							    /*fileWriter.append(fileName);
 							    fileWriter.append(SEPARATOR);
+							    fileWriter.append(String.valueOf(minimo(costos)));
+							    fileWriter.append(QUOTE);*/
+							    
+							    fileWriter.write(fileName);
+							    fileWriter.write(SEPARATOR);
+							    fileWriter.write(String.valueOf(minimo(costos)));
+							    fileWriter.write(QUOTE);
+							    fileWriter.flush();
 			        		}
 						}
 			        	
@@ -255,13 +343,15 @@ public class Main {
 			            line = br.readLine();
 			        }
 			        fileWriter.close();
+			        pw.close();
 			        
 			     } catch (Exception e) {
-			        //...
+			    	 e.printStackTrace();
 			     } finally {
 			        if (null!=br) {
 			           br.close();
 			        }
+			        
 			     }
 			}else if(args[0].equalsIgnoreCase("-help"))	{
 				System.out.println("Ejemplo de sintaxis:");
@@ -308,4 +398,6 @@ public class Main {
 		}
 		return min;
 	}
+	
+
 }

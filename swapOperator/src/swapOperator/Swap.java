@@ -95,7 +95,7 @@ public class Swap {
 	}
 
 	public void toStringSolcuionInicial(int[] solucionInicial) {
-		System.out.println("Solución inicial: " + Arrays.toString(solucionInicial));
+		//System.out.println("Solución inicial: " + Arrays.toString(solucionInicial));
 		// System.out.println("A partir de matriz d:
 		// "+Arrays.toString(generarSolcuionInicial(matrizD)));
 	}

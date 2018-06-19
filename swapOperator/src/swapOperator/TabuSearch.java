@@ -143,14 +143,14 @@ public class TabuSearch {
 			iteraciones--;
 		}
 		
-		System.out.println("Mejor costo histórico encontrado: " + swap.evaluarCostoSolucion(solucionInicial));
-		System.out.print("Mejor solución histórica encontrada: ");
+		//System.out.println("Mejor costo histórico encontrado: " + swap.evaluarCostoSolucion(solucionInicial));
+		//System.out.print("Mejor solución histórica encontrada: ");
 		swap.toStringSolucion(solucionInicial,1);
 
 		// tiempo de ejecución
 		long endTime = System.nanoTime();
 		long totalTime = (endTime - startTime) / 1000000;
-		System.out.println("tiempo ejecución: " + totalTime + " milisegundos");
+		//System.out.println("tiempo ejecución: " + totalTime + " milisegundos");
 
 		return costos;
 	}
