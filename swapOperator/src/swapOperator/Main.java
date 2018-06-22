@@ -157,6 +157,48 @@ public class Main {
 					//demo.pack();
 					//RefineryUtilities.centerFrameOnScreen(demo);
 					//demo.setVisible(true);
+				}else if(args[5].equals("AG")) {
+					System.out.println("######## Algoritmo Genético ########");
+					int tamanoPoblacion = 100;
+					int criterioParada = 0;
+					int valorDetencion = 100;
+					double porcentajeCorteMenor = 0.25;
+					double porcentajeCorteMayor = 0.75;
+					boolean incluirMemoriaPrevia = false;
+					int numeroDeRestarts = -1;
+					double porcentajeAGuardarMejoresSolucionesEnMemoria = 0.1;
+
+					if ( args.length > 6)
+						tamanoPoblacion = Integer.parseInt(args[6]);
+
+					if ( args.length > 7)
+						criterioParada = Integer.parseInt(args[7]);
+
+					if ( args.length > 8)
+						valorDetencion = Integer.parseInt(args[8]);
+
+					if ( args.length > 9)
+						porcentajeCorteMenor = Double.parseDouble(args[9]);
+
+					if ( args.length > 9)
+						porcentajeCorteMayor = Double.parseDouble(args[10]);
+					
+					if ( args.length > 9)
+						incluirMemoriaPrevia = Boolean.parseBoolean(args[11]);
+					
+					if ( args.length > 9)
+						numeroDeRestarts = Integer.parseInt(args[12]);
+					
+					if ( args.length > 9)
+						porcentajeAGuardarMejoresSolucionesEnMemoria = Double.parseDouble(args[13]);
+
+					ArrayList<Double> costos = AlgoritmoGenetico.algoritmoGenetico(solucionInicial, cantidadSwappings, tamanoPoblacion, criterioParada, valorDetencion, swap, porcentajeCorteMenor, porcentajeCorteMayor, incluirMemoriaPrevia, numeroDeRestarts, porcentajeAGuardarMejoresSolucionesEnMemoria);
+
+					//plotting
+					final XYPlotVista demo = new XYPlotVista("Gráfico optimización Algoritmos Genéticos", "Costo", costos); //Yo
+					//demo.pack();
+					//RefineryUtilities.centerFrameOnScreen(demo);
+					//demo.setVisible(true);
 				}
 			}else if(args[0].equalsIgnoreCase("-dataset")){ //si parto con -dataset carga el dataste para hacer varias pruebas programadas
 				BufferedReader br = null;
