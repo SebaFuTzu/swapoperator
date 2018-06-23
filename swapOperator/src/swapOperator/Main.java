@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
+import org.jfree.ui.RefineryUtilities;
+
 public class Main {
 	public static final String SEPARATOR=";";
 	public static final String QUOTE="\"";
@@ -159,14 +161,15 @@ public class Main {
 					//demo.setVisible(true);
 				}else if(args[5].equals("AG")) {
 					System.out.println("######## Algoritmo Genético ########");
-					int tamanoPoblacion = 100;
+					int tamanoPoblacion = 10000;
 					int criterioParada = 0;
-					int valorDetencion = 100;
+					int valorDetencion = 1000;
 					double porcentajeCorteMenor = 0.25;
-					double porcentajeCorteMayor = 0.75;
+					double porcentajeCorteMayor = 0.95;
 					boolean incluirMemoriaPrevia = false;
 					int numeroDeRestarts = -1;
 					double porcentajeAGuardarMejoresSolucionesEnMemoria = 0.1;
+					double ponderadorRuleta = 0.25;
 
 					if ( args.length > 6)
 						tamanoPoblacion = Integer.parseInt(args[6]);
@@ -192,13 +195,17 @@ public class Main {
 					if ( args.length > 9)
 						porcentajeAGuardarMejoresSolucionesEnMemoria = Double.parseDouble(args[13]);
 
-					ArrayList<Double> costos = AlgoritmoGenetico.algoritmoGenetico(solucionInicial, cantidadSwappings, tamanoPoblacion, criterioParada, valorDetencion, swap, porcentajeCorteMenor, porcentajeCorteMayor, incluirMemoriaPrevia, numeroDeRestarts, porcentajeAGuardarMejoresSolucionesEnMemoria);
+					if ( args.length > 9)
+						ponderadorRuleta = Double.parseDouble(args[14]);
+
+					
+					ArrayList<Double> costos = AlgoritmoGenetico.algoritmoGenetico(solucionInicial, cantidadSwappings, tamanoPoblacion, criterioParada, valorDetencion, swap, porcentajeCorteMenor, porcentajeCorteMayor, incluirMemoriaPrevia, numeroDeRestarts, porcentajeAGuardarMejoresSolucionesEnMemoria, ponderadorRuleta);
 
 					//plotting
 					final XYPlotVista demo = new XYPlotVista("Gráfico optimización Algoritmos Genéticos", "Costo", costos); //Yo
-					//demo.pack();
-					//RefineryUtilities.centerFrameOnScreen(demo);
-					//demo.setVisible(true);
+					demo.pack();
+					RefineryUtilities.centerFrameOnScreen(demo);
+					demo.setVisible(true);
 				}
 			}else if(args[0].equalsIgnoreCase("-dataset")){ //si parto con -dataset carga el dataste para hacer varias pruebas programadas
 				BufferedReader br = null;
