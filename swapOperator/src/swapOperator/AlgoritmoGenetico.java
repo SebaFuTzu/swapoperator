@@ -18,7 +18,9 @@ public class AlgoritmoGenetico {
 	static double mejorCostoIteracionAnterior;
 	static double mejorCostoIteracionActual;
 	static double mejorCostoHistorico;
+	static double mejorCostoHistoricoRestarts;
 	static int[] mejorSolucionHistorica;
+	static int[] mejorSolucionHistoricaRestarts;
 	static double fitnessPromedio;
 	static ArrayList<IndividuoAlgoritmoGenetico> memoriaMejoresSolucionesOrdenada;
 	static ArrayList<IndividuoAlgoritmoGenetico> poblacionActual;
@@ -46,13 +48,13 @@ public class AlgoritmoGenetico {
 		}
 		
 		//incluyo la memoria de iteraciones previas
-		if(incluirMemoriaPrevia) {
+		if(incluirMemoriaPrevia && memoriaMejoresSolucionesOrdenada!=null) {
 			poblacionActual.addAll((ArrayList<IndividuoAlgoritmoGenetico>) memoriaMejoresSolucionesOrdenada.clone());
 		}
 	}
 	
 	//Selección: para obtener a los padres (individuos seleccionados por ruleta)
-	public static ArrayList<IndividuoAlgoritmoGenetico> seleccionarPorRuleta(ArrayList<IndividuoAlgoritmoGenetico> poblacionEntrada, Swap swap, double ponderadorRuleta) {
+	public static ArrayList<IndividuoAlgoritmoGenetico> seleccionarPorRuleta(ArrayList<IndividuoAlgoritmoGenetico> poblacionEntrada, Swap swap, double ponderadorCantidadDePadres) {
 		padresSeleccionados = new ArrayList<IndividuoAlgoritmoGenetico>();
 		
 		//sumamos todos los costos para armar ruleta
@@ -60,15 +62,20 @@ public class AlgoritmoGenetico {
 		
 		//ruleta con calculo de fitness incluido
 		random = new Random();
-		//int fitness = (int)sumaTotalCostosPoblacion;
+		int[] ruleta = new int[poblacionEntrada.size()];
+		int acumulado = 0;
 		for(int k=0;k<poblacionEntrada.size();k++) {
-			//int fitnessActual = (int)evaluarFitnessIndividuo(poblacionEntrada.get(k), sumaTotalCostosPoblacion);
-			int cotaMenor = 0;
-			int cotaMayor = (int)sumaTotalCostosPoblacion - (int)evaluarFitnessIndividuo(poblacionEntrada.get(k), sumaTotalCostosPoblacion);
-			if(lanzarBolaRuleta(cotaMenor, cotaMayor, random.nextInt((int)sumaTotalCostosPoblacion), (sumaTotalCostosPoblacion*ponderadorRuleta))) {
-				padresSeleccionados.add(new IndividuoAlgoritmoGenetico(poblacionEntrada.get(k).getSolucion().clone(), swap.evaluarCostoSolucion(poblacionEntrada.get(k).getSolucion())));
+			acumulado += (int)sumaTotalCostosPoblacion - (int)evaluarFitnessIndividuo(poblacionEntrada.get(k), sumaTotalCostosPoblacion);
+			ruleta[k] = acumulado;
+		}
+		
+		for(int x=0;x<poblacionEntrada.size()*ponderadorCantidadDePadres;x++) {//cuantos padres seleccionamos
+			int lanzamiento = random.nextInt((int)sumaTotalCostosPoblacion);
+			for(int i=0;i<poblacionEntrada.size()-1;i++) {
+				if(ruleta[i]<lanzamiento && lanzamiento<=ruleta[i+1]) {
+					padresSeleccionados.add(new IndividuoAlgoritmoGenetico(poblacionEntrada.get(i+1).getSolucion().clone(), swap.evaluarCostoSolucion(poblacionEntrada.get(i+1).getSolucion())));
+				}
 			}
-			//fitness-=fitnessActual;
 		}
 		return padresSeleccionados;
 	}
@@ -129,7 +136,7 @@ public class AlgoritmoGenetico {
 	
 	//Método que clasifica a los padres de acuerdo a su costo. A los 25% mejores y 25% peores se les aplicará mutación
 	//de 2 swap. Al 50% del medio se les hará crossover
-	public static ArrayList<IndividuoAlgoritmoGenetico> reproducir(ArrayList<IndividuoAlgoritmoGenetico> poblacionEntrada, int cantidadSwappings, Swap swap, double porcentajeCorteMenor, double porcentajeCorteMayor){
+	public static ArrayList<IndividuoAlgoritmoGenetico> reproducir(ArrayList<IndividuoAlgoritmoGenetico> poblacionEntrada, int cantidadSwappings, Swap swap, double porcentajeCorteMenor, double porcentajeCorteMayor, int tamanoPoblacion){
 		nuevaPoblacion = new ArrayList<>();//inicializo la nueva población
 		poblacionEntrada.sort(Comparator.comparingDouble(IndividuoAlgoritmoGenetico::getCosto));//Se ordenan de menor costo a mayor costo
 		//Marco los cortes que se haran a la colección de padres
@@ -169,11 +176,14 @@ public class AlgoritmoGenetico {
 			nuevaPoblacion.add(new IndividuoAlgoritmoGenetico(generarNuevoIndividuoMutacion(poblacionEntrada.get(j).getSolucion(), cantidadSwappings, swap), 0.0));
 		}
 		
-		if(poblacionEntrada.size()>nuevaPoblacion.size()) {
-			for(int a=0;a<poblacionEntrada.size()-nuevaPoblacion.size();a++) {
-				nuevaPoblacion.add(new IndividuoAlgoritmoGenetico(swap.generarSolcuionInicial(swap.getMatrizF()), 0.0));
-			}
+		while(nuevaPoblacion.size()<=tamanoPoblacion) {
+			nuevaPoblacion.add(new IndividuoAlgoritmoGenetico(swap.generarSolcuionInicial(swap.getMatrizF()), 0.0));
 		}
+//		if(tamanoPoblacion>nuevaPoblacion.size()) {
+//			for(int a=0;a<tamanoPoblacion-nuevaPoblacion.size();a++) {
+//				nuevaPoblacion.add(new IndividuoAlgoritmoGenetico(swap.generarSolcuionInicial(swap.getMatrizF()), 0.0));
+//			}
+//		}
 		
 		return nuevaPoblacion;
 	}
@@ -251,16 +261,20 @@ public class AlgoritmoGenetico {
 		if(poblacion.size()>0) {
 			mejorCostoPoblacion = poblacion.get(0).getCosto();//retorno el costo del primer individuo de la población ordenada de menor a mayor costo
 			if(mejorCostoHistorico>mejorCostoPoblacion) {
-				mejorSolucionHistorica = poblacion.get(0).getSolucion();//guardo la mejor solución de esta población
+				mejorSolucionHistorica = poblacion.get(0).getSolucion();//guardo la mejor solución de esta población				
+			}
+			if(mejorCostoHistoricoRestarts>mejorCostoPoblacion) {
+				mejorSolucionHistoricaRestarts = poblacion.get(0).getSolucion();
 			}
 		}
 		return mejorCostoPoblacion;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static ArrayList<Double> algoritmoGenetico(int[] solucionSemillaInicial, int cantidadSwappings, int tamanoPoblacion, int criterioParada, int valorDetencion, Swap swap, double porcentajeCorteMenor, double porcentajeCorteMayor, boolean incluirMemoriaPrevia, int numeroDeRestarts, double porcentajeAGuardarMejoresSolucionesEnMemoria, double ponderadorRuleta) {
+	public static ArrayList<Double> algoritmoGenetico(int[] solucionSemillaInicial, int cantidadSwappings, int tamanoPoblacion, int criterioParada, int valorDetencion, Swap swap, double porcentajeCorteMenor, double porcentajeCorteMayor, boolean incluirMemoriaPrevia, int numeroDeRestarts, double porcentajeAGuardarMejoresSolucionesEnMemoria, double ponderadorCantidadDePadres, int maximoIteracionesAdaptativo) {
 		ArrayList<Double> costos = new ArrayList<>();
 		cantidadSwappingsAG = cantidadSwappings;
+		int restarts = numeroDeRestarts;
 		long startTime = System.nanoTime();// Contador de tiempo
 		
 		//genero población incial
@@ -280,10 +294,10 @@ public class AlgoritmoGenetico {
 			
 			//Selecciono a los padres que cruzaré para obtener la población que eventualmente reemplazará a la actual
 			copiaPoblacionActual = (ArrayList<IndividuoAlgoritmoGenetico>) poblacionActual.clone();
-			padresSeleccionados = seleccionarPorRuleta(copiaPoblacionActual, swap, ponderadorRuleta);
+			padresSeleccionados = seleccionarPorRuleta(copiaPoblacionActual, swap, ponderadorCantidadDePadres);
 			
 			//Reproduzco los padres entre sí para obtener la población P'(t)
-			nuevaPoblacion = reproducir(padresSeleccionados, cantidadSwappings, swap, porcentajeCorteMenor, porcentajeCorteMayor);
+			nuevaPoblacion = reproducir(padresSeleccionados, cantidadSwappings, swap, porcentajeCorteMenor, porcentajeCorteMayor, tamanoPoblacion);
 			
 			//Evalúo la nueva población
 			nuevaPoblacion = evaluarCostosDeCadaIndividuoDeLaPoblacion(nuevaPoblacion,swap);//retorno la nueva población con la evaluación de los costos de cada individuo
@@ -297,12 +311,18 @@ public class AlgoritmoGenetico {
 			}
 			
 			if(mejorCostoHistorico==0.0 || mejorCostoHistorico>mejorCostoIteracionActual) {
-				mejorCostoHistorico=mejorCostoIteracionActual;
+				mejorCostoHistorico=mejorCostoIteracionActual;								
 			}
+			
+			if(mejorCostoHistoricoRestarts==0 || mejorCostoHistoricoRestarts>mejorCostoHistorico) {
+				mejorCostoHistoricoRestarts=mejorCostoHistorico;
+			}
+			
 			costos.add(mejorCostoHistorico);//guardo el mejor costo	
 			/**if(mejorCostoHistorico==-1) {
 				mejorCostoHistorico = 0;
 			}*/
+			System.out.println(contadorGeneraciones+" - "+mejorCostoHistorico);
 			
 			//evalúo si reemplazo la población actual por la nueva población
 			//poblacionActual = reemplazarPoblacionActualFitnessPromedio(copiaPoblacionActual, copiaNuevaPoblacion);
@@ -312,7 +332,7 @@ public class AlgoritmoGenetico {
 			
 			//Criterios de parada
 			if(criterioParada==CRITERIO_PARADA_NUMERO_FIJO_GENERACIONES) {			
-				if(contadorGeneraciones==valorDetencion) {//Criterio numero de generaciones fijo
+				if(!(contadorGeneraciones<valorDetencion)) {//Criterio numero de generaciones fijo
 					if(numeroDeRestarts>-1) {
 						if(numeroDeRestarts>0) {
 							realizarRestartPoblacion(copiaPoblacionActual, solucionInicial, porcentajeAGuardarMejoresSolucionesEnMemoria, tamanoPoblacion, swap, incluirMemoriaPrevia);
@@ -326,17 +346,18 @@ public class AlgoritmoGenetico {
 				}
 			}else if(criterioParada==CRITERIO_PARADA_ADAPTATIVO) {
 				//seteo el contador para el criterio de parada adaptativo
-				if(mejorCostoIteracionAnterior==mejorCostoIteracionActual) {
-					contadorGeneraciones++;
+				if(mejorCostoIteracionAnterior<=mejorCostoIteracionActual) {
+					contadorMismoCosto++;
 				}else if(mejorCostoIteracionAnterior>mejorCostoIteracionActual){
-					contadorGeneraciones=0;
+					contadorMismoCosto=0;
 				}
 				
-				if(contadorMismoCosto==20) {//Criterio 20 generaciones sin encontrar un mejor costo
+				if(!(contadorMismoCosto<maximoIteracionesAdaptativo)) {//Criterio maximoIteracionesAdaptativo generaciones sin encontrar un mejor costo
 					if(numeroDeRestarts>-1) {
 						if(numeroDeRestarts>0) {
 							realizarRestartPoblacion(copiaPoblacionActual, solucionInicial, porcentajeAGuardarMejoresSolucionesEnMemoria, tamanoPoblacion, swap, incluirMemoriaPrevia);
 							numeroDeRestarts--;
+							mejorCostoHistorico = 0.0;
 						}else {
 							break;
 						}					
@@ -347,10 +368,11 @@ public class AlgoritmoGenetico {
 			}		
 		}
 		
-		System.out.println("Mejor costo histórico encontrado: " + swap.evaluarCostoSolucion(mejorSolucionHistorica));
+		System.out.println("Mejor costo histórico encontrado: " + swap.evaluarCostoSolucion(mejorSolucionHistoricaRestarts));
 		System.out.print("Mejor solución histórica encontrada: ");
-		swap.toStringSolucion(mejorSolucionHistorica,1);
+		swap.toStringSolucion(mejorSolucionHistoricaRestarts,1);
 		System.out.println("Número de generaciones evaluadas: "+contadorGeneraciones);
+		System.out.println("Número de restarts: "+(restarts-numeroDeRestarts));
 
 		// tiempo de ejecución
 		long endTime = System.nanoTime();

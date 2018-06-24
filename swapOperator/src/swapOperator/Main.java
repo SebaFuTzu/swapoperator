@@ -161,15 +161,16 @@ public class Main {
 					//demo.setVisible(true);
 				}else if(args[5].equals("AG")) {
 					System.out.println("######## Algoritmo Genético ########");
-					int tamanoPoblacion = 10000;
-					int criterioParada = 0;
-					int valorDetencion = 1000;
+					int tamanoPoblacion = 128;
+					int criterioParada = 1;
+					int valorDetencion = 500;
 					double porcentajeCorteMenor = 0.25;
-					double porcentajeCorteMayor = 0.95;
+					double porcentajeCorteMayor = 0.75;
 					boolean incluirMemoriaPrevia = false;
-					int numeroDeRestarts = -1;
+					int numeroDeRestarts = 3;
 					double porcentajeAGuardarMejoresSolucionesEnMemoria = 0.1;
-					double ponderadorRuleta = 0.25;
+					double ponderadorCantidadDePadres = 0.25;
+					int maximoIteracionesAdaptativo = 1000;
 
 					if ( args.length > 6)
 						tamanoPoblacion = Integer.parseInt(args[6]);
@@ -196,10 +197,13 @@ public class Main {
 						porcentajeAGuardarMejoresSolucionesEnMemoria = Double.parseDouble(args[13]);
 
 					if ( args.length > 9)
-						ponderadorRuleta = Double.parseDouble(args[14]);
+						ponderadorCantidadDePadres = Double.parseDouble(args[14]);
+					
+					if ( args.length > 9)
+						maximoIteracionesAdaptativo = Integer.parseInt(args[15]);
 
 					
-					ArrayList<Double> costos = AlgoritmoGenetico.algoritmoGenetico(solucionInicial, cantidadSwappings, tamanoPoblacion, criterioParada, valorDetencion, swap, porcentajeCorteMenor, porcentajeCorteMayor, incluirMemoriaPrevia, numeroDeRestarts, porcentajeAGuardarMejoresSolucionesEnMemoria, ponderadorRuleta);
+					ArrayList<Double> costos = AlgoritmoGenetico.algoritmoGenetico(solucionInicial, cantidadSwappings, tamanoPoblacion, criterioParada, valorDetencion, swap, porcentajeCorteMenor, porcentajeCorteMayor, incluirMemoriaPrevia, numeroDeRestarts, porcentajeAGuardarMejoresSolucionesEnMemoria, ponderadorCantidadDePadres, maximoIteracionesAdaptativo);
 
 					//plotting
 					final XYPlotVista demo = new XYPlotVista("Gráfico optimización Algoritmos Genéticos", "Costo", costos); //Yo
