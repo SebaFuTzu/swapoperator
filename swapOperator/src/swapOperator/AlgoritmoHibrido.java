@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Random;
 
-public class AlgoritmoGenetico {
+public class AlgoritmoHibrido {
 	static int[] hijo;
 	static int[] solucionMutada;
 	static int[] solucionInicial;
@@ -34,6 +34,7 @@ public class AlgoritmoGenetico {
 	static IndividuoAlgoritmoGenetico mejorSolucion;
 	static int cantidadSwappingsAG;
 	static double totalFitness;
+	static TabuSearch tabuSearchHibrido;
 	
 	public static final int CRITERIO_PARADA_NUMERO_FIJO_GENERACIONES = 0;
 	public static final int CRITERIO_PARADA_ADAPTATIVO = 1;
@@ -179,11 +180,11 @@ public class AlgoritmoGenetico {
 		while(nuevaPoblacion.size()<=tamanoPoblacion) {
 			nuevaPoblacion.add(new IndividuoAlgoritmoGenetico(swap.generarSolcuionInicial(swap.getMatrizF()), 0.0));
 		}
-//		if(tamanoPoblacion>nuevaPoblacion.size()) {
-//			for(int a=0;a<tamanoPoblacion-nuevaPoblacion.size();a++) {
-//				nuevaPoblacion.add(new IndividuoAlgoritmoGenetico(swap.generarSolcuionInicial(swap.getMatrizF()), 0.0));
+//			if(tamanoPoblacion>nuevaPoblacion.size()) {
+//				for(int a=0;a<tamanoPoblacion-nuevaPoblacion.size();a++) {
+//					nuevaPoblacion.add(new IndividuoAlgoritmoGenetico(swap.generarSolcuionInicial(swap.getMatrizF()), 0.0));
+//				}
 //			}
-//		}
 		
 		return nuevaPoblacion;
 	}
@@ -270,8 +271,16 @@ public class AlgoritmoGenetico {
 		return mejorCostoPoblacion;
 	}
 	
+	public static ArrayList<IndividuoAlgoritmoGenetico> realizarTabuSearchPoblacion(ArrayList<IndividuoAlgoritmoGenetico> nuevaPoblacion, Swap swap, int duracionTabuList, int iteraciones, int profundidadIntensificacion, boolean intensificacion, boolean diversificacion) {
+		for(int i=0;i<nuevaPoblacion.size();i++) {
+			//System.out.println("Individuo de la población en Tabu search: "+i);
+			nuevaPoblacion.get(i).setSolucion(tabuSearchHibrido.TabuSearchHibrido(nuevaPoblacion.get(i).getSolucion(), swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion, i));
+		}
+		return nuevaPoblacion;
+	}
+	
 	@SuppressWarnings("unchecked")
-	public static ArrayList<Double> algoritmoGenetico(int[] solucionSemillaInicial, int cantidadSwappings, int tamanoPoblacion, int criterioParada, int valorDetencion, Swap swap, double porcentajeCorteMenor, double porcentajeCorteMayor, boolean incluirMemoriaPrevia, int numeroDeRestarts, double porcentajeAGuardarMejoresSolucionesEnMemoria, double ponderadorCantidadDePadres, int maximoIteracionesAdaptativo) {
+	public static ArrayList<Double> algoritmoHibrido(int[] solucionSemillaInicial, int cantidadSwappings, int tamanoPoblacion, int criterioParada, int valorDetencion, Swap swap, double porcentajeCorteMenor, double porcentajeCorteMayor, boolean incluirMemoriaPrevia, int numeroDeRestarts, double porcentajeAGuardarMejoresSolucionesEnMemoria, double ponderadorCantidadDePadres, int maximoIteracionesAdaptativo, int duracionTabuList, int iteraciones, int profundidadIntensificacion, boolean intensificacion, boolean diversificacion) {
 		ArrayList<Double> costos = new ArrayList<>();
 		cantidadSwappingsAG = cantidadSwappings;
 		int restarts = numeroDeRestarts;
@@ -298,6 +307,10 @@ public class AlgoritmoGenetico {
 			
 			//Reproduzco los padres entre sí para obtener la población P'(t)
 			nuevaPoblacion = reproducir(padresSeleccionados, cantidadSwappings, swap, porcentajeCorteMenor, porcentajeCorteMayor, tamanoPoblacion);
+			
+			//Inserto un Tabu Search para cada individuo de la nueva población, con el objetivo de mejorar fitness de la nueva población
+			copiaNuevaPoblacion = (ArrayList<IndividuoAlgoritmoGenetico>) nuevaPoblacion.clone();
+			nuevaPoblacion = realizarTabuSearchPoblacion(copiaNuevaPoblacion, swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion);
 			
 			//Evalúo la nueva población
 			nuevaPoblacion = evaluarCostosDeCadaIndividuoDeLaPoblacion(nuevaPoblacion,swap);//retorno la nueva población con la evaluación de los costos de cada individuo

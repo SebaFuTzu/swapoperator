@@ -162,15 +162,15 @@ public class Main {
 				}else if(args[5].equals("AG")) {
 					System.out.println("######## Algoritmo Genético ########");
 					int tamanoPoblacion = 128;
-					int criterioParada = 1;
-					int valorDetencion = 500;
+					int criterioParada = 0;
+					int valorDetencion = 5000;
 					double porcentajeCorteMenor = 0.25;
 					double porcentajeCorteMayor = 0.75;
 					boolean incluirMemoriaPrevia = false;
-					int numeroDeRestarts = 3;
+					int numeroDeRestarts = -1;
 					double porcentajeAGuardarMejoresSolucionesEnMemoria = 0.1;
 					double ponderadorCantidadDePadres = 0.25;
-					int maximoIteracionesAdaptativo = 1000;
+					int maximoIteracionesAdaptativo = 5000;
 
 					if ( args.length > 6)
 						tamanoPoblacion = Integer.parseInt(args[6]);
@@ -204,6 +204,80 @@ public class Main {
 
 					
 					ArrayList<Double> costos = AlgoritmoGenetico.algoritmoGenetico(solucionInicial, cantidadSwappings, tamanoPoblacion, criterioParada, valorDetencion, swap, porcentajeCorteMenor, porcentajeCorteMayor, incluirMemoriaPrevia, numeroDeRestarts, porcentajeAGuardarMejoresSolucionesEnMemoria, ponderadorCantidadDePadres, maximoIteracionesAdaptativo);
+
+					//plotting
+					final XYPlotVista demo = new XYPlotVista("Gráfico optimización Algoritmos Genéticos", "Costo", costos); //Yo
+					demo.pack();
+					RefineryUtilities.centerFrameOnScreen(demo);
+					demo.setVisible(true);
+				}else if(args[5].equals("AH")) {
+					System.out.println("######## Algoritmo Híbrido ########");
+					//Parámetros parte algoritmo genético
+					int tamanoPoblacion = 20;
+					int criterioParada = 0;
+					int valorDetencion = 3;
+					double porcentajeCorteMenor = 0.25;
+					double porcentajeCorteMayor = 0.75;
+					boolean incluirMemoriaPrevia = false;
+					int numeroDeRestarts = -1;
+					double porcentajeAGuardarMejoresSolucionesEnMemoria = 0.1;
+					double ponderadorCantidadDePadres = 0.25;
+					int maximoIteracionesAdaptativo = 5000;
+					
+					//Parámetros Tabu search
+					int duracionTabuList = 10;
+					int iteraciones = 20;
+					int profundidadIntensificacion = 10;
+					boolean intensificacion = false;
+					boolean diversificacion = true;					
+
+					if ( args.length > 6)
+						tamanoPoblacion = Integer.parseInt(args[6]);
+
+					if ( args.length > 7)
+						criterioParada = Integer.parseInt(args[7]);
+
+					if ( args.length > 8)
+						valorDetencion = Integer.parseInt(args[8]);
+
+					if ( args.length > 9)
+						porcentajeCorteMenor = Double.parseDouble(args[9]);
+
+					if ( args.length > 9)
+						porcentajeCorteMayor = Double.parseDouble(args[10]);
+					
+					if ( args.length > 9)
+						incluirMemoriaPrevia = Boolean.parseBoolean(args[11]);
+					
+					if ( args.length > 9)
+						numeroDeRestarts = Integer.parseInt(args[12]);
+					
+					if ( args.length > 9)
+						porcentajeAGuardarMejoresSolucionesEnMemoria = Double.parseDouble(args[13]);
+
+					if ( args.length > 9)
+						ponderadorCantidadDePadres = Double.parseDouble(args[14]);
+					
+					if ( args.length > 9)
+						maximoIteracionesAdaptativo = Integer.parseInt(args[15]);
+					
+					if ( args.length > 6)
+						duracionTabuList = Integer.parseInt(args[16]);
+
+					if ( args.length > 7)
+						iteraciones = Integer.parseInt(args[17]);
+
+					if ( args.length > 8)
+						profundidadIntensificacion = Integer.parseInt(args[18]);
+
+					if ( args.length > 9)
+						intensificacion = Boolean.parseBoolean(args[19]);
+
+					if ( args.length > 7)
+						diversificacion = Boolean.parseBoolean(args[20]);
+
+					
+					ArrayList<Double> costos = AlgoritmoHibrido.algoritmoHibrido(solucionInicial, cantidadSwappings, tamanoPoblacion, criterioParada, valorDetencion, swap, porcentajeCorteMenor, porcentajeCorteMayor, incluirMemoriaPrevia, numeroDeRestarts, porcentajeAGuardarMejoresSolucionesEnMemoria, ponderadorCantidadDePadres, maximoIteracionesAdaptativo, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion);
 
 					//plotting
 					final XYPlotVista demo = new XYPlotVista("Gráfico optimización Algoritmos Genéticos", "Costo", costos); //Yo

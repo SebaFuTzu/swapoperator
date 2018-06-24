@@ -337,4 +337,128 @@ public class TabuSearch {
 			iteraciones--;
 		}
 	}
+	
+	public static int[] TabuSearchHibrido(int[] solucionInicial, Swap swap, int duracionTabuList, int iteraciones, int profundidadIntensificacion, boolean intensificacion, boolean diversificacion, int individuo) {
+		// definición de objetos y variables
+		int totalIteraciones = iteraciones;
+		cantidadSwappings = 2;
+		valoresSwapped = new int[cantidadSwappings];
+		mejorCostoHistorico = 0;
+		
+		if(duracionTabuList==-1) {
+			Random rnd = new Random();
+			duracionTabuList = rnd.nextInt(solucionInicial.length);
+		}
+
+		//ArrayList<Double> costos = new ArrayList<Double>();
+		//long startTime = System.nanoTime();// Contador de tiempo
+
+		//tamanoVecindad = swap.calcularTamañoVecindad(swap.getMatrizF(), cantidadSwappings);
+		
+		copiaSolucionInicial = Arrays.copyOf(solucionInicial, solucionInicial.length);
+		
+		inicializarListaTabu(copiaSolucionInicial);
+		inicializarMemoriaFrecuencias(copiaSolucionInicial);
+		inicializarListaCandidatos(copiaSolucionInicial);
+		inicializarMemoriaMedianoPlazo(copiaSolucionInicial);
+
+		costoSolucionInicial = swap.evaluarCostoSolucion(solucionInicial);
+		//costos.add(costoSolucionInicial);
+		
+		mejorCostoHistorico=costoSolucionInicial;
+
+		while(iteraciones>0) {
+			// Genero la vecindad y los valores de las soluciones candidatas a óptimo
+			prioridadEvaluacion = new ArrayList<>(); 
+			for (Map.Entry<ItemTabu, Integer> entry : listaTabu.entrySet()) {
+				valoresSwapped[0] = entry.getKey().getItem1();
+				valoresSwapped[1] = entry.getKey().getItem2();
+				solucionActual = swap.swapping(solucionInicial, valoresSwapped);
+				costoSolucionActual = swap.evaluarCostoSolucion(solucionActual);
+				
+				//para la etapa de intensificación, debo anotar en la memoria
+				//de mediano plazo, las veces en que quedan los items en una posición
+				//a causa del swap
+				for(int x=0;x<solucionActual.length;x++) {
+					if(entry.getKey().getItem1()==solucionActual[x]) {
+						guardarMemoriaMedianoPlazo(entry.getKey().getItem1(), x);
+					}
+					if(entry.getKey().getItem2()==solucionActual[x]) {
+						guardarMemoriaMedianoPlazo(entry.getKey().getItem2(), x);
+					}
+				}
+				
+				//entry.setValue(costoSolucionInicial - costoSolucionActual);// guardo la mayor diferencia como mejor costo
+				//entry.getKey().setOrden(costoSolucionInicial - costoSolucionActual);
+				
+				if(diversificacion) {
+					penalizacion = memoriaFrecuencias.get(new ItemTabu(entry.getKey().getItem1(), entry.getKey().getItem2(),0));
+				}else {
+					penalizacion = 0;
+				}
+				prioridadEvaluacion.add(new ItemTabu(valoresSwapped[0], valoresSwapped[1], costoSolucionInicial - costoSolucionActual - penalizacion));			
+			}
+			prioridadEvaluacion.sort(Comparator.comparingDouble(ItemTabu::getCosto));
+			
+			//calculo la mejor solución para esta iteración
+			mejorSolucion = null;
+			for (int z=prioridadEvaluacion.size()-1;z>=0;z--) {			
+				// guardo el mejor item hasta el momento
+				if (mejorSolucion == null || (prioridadEvaluacion.get(z).getCosto()-mejorSolucion.getCosto()) < 0) {
+					// verifico que no esté en la lista tabú
+					if (listaTabu.get(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0)) <= 0) {// no es tabú
+						mejorSolucion = prioridadEvaluacion.get(z);
+						listaTabu.put(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0), listaTabu.get(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0))+duracionTabuList);
+						memoriaFrecuencias.put(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0), memoriaFrecuencias.get(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0))+1);
+						break;
+					} else {// es tabú
+						if(mejorSolucion==null) {//sólo si no hay una solución ya guardada antes
+							valoresSwapped[0] = prioridadEvaluacion.get(z).getItem1();
+							valoresSwapped[1] = prioridadEvaluacion.get(z).getItem2();
+							solucionActual = swap.swapping(solucionInicial, valoresSwapped);
+							costoSolucionActual = swap.evaluarCostoSolucion(solucionActual);
+							if (evaluarCriterioAspiracion(mejorCostoHistorico, costoSolucionActual)) {// comparo la solución tabú con la mejor histórica
+								mejorSolucion = prioridadEvaluacion.get(z);
+								listaTabu.put(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0), listaTabu.get(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0))+duracionTabuList);
+								memoriaFrecuencias.put(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0), memoriaFrecuencias.get(new ItemTabu(prioridadEvaluacion.get(z).getItem1(), prioridadEvaluacion.get(z).getItem2(),0))+1);
+								break;
+							}
+						}
+					}
+				}
+			}
+			if(mejorSolucion==null)
+				break;
+			valoresSwapped[0] = mejorSolucion.getItem1();
+			valoresSwapped[1] = mejorSolucion.getItem2();
+			solucionInicial = swap.swapping(solucionInicial, valoresSwapped);
+			
+			//etapa de intensificación
+			if(intensificacion) {
+				realizarIntensificacion(solucionInicial, profundidadIntensificacion, swap, new ArrayList<Double>(), iteraciones, duracionTabuList, intensificacion, diversificacion);
+			}
+			
+			costoSolucionInicial = swap.evaluarCostoSolucion(solucionInicial);
+			//costos.add(costoSolucionInicial);
+			
+			if(mejorCostoHistorico<costoSolucionInicial) {
+				mejorCostoHistorico=costoSolucionInicial;
+			}
+			
+			iteraciones--;
+			
+			System.out.println("Individuo "+individuo+" - Costo iteración "+(totalIteraciones-iteraciones)+": "+costoSolucionInicial);
+		}
+		
+		//System.out.println("Mejor costo histórico encontrado: " + swap.evaluarCostoSolucion(solucionInicial));
+		//System.out.print("Mejor solución histórica encontrada: ");
+		//swap.toStringSolucion(solucionInicial,1);
+
+		// tiempo de ejecución
+		//long endTime = System.nanoTime();
+		//long totalTime = (endTime - startTime) / 1000000;
+		//System.out.println("tiempo ejecución: " + totalTime + " milisegundos");
+
+		return solucionInicial.clone();
+	}
 }
