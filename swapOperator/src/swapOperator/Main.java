@@ -535,7 +535,7 @@ public class Main {
 								fileName = df.format(new java.util.Date())  ; //+ ;
 								//plotting
 								//final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1)); //Yo
-								plot.Plot("Gráfico optimización Tabu Search", "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1));
+								plot.Plot("Gráfico optimización Algoritmo Genético", "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1));
 
 
 
@@ -639,7 +639,7 @@ public class Main {
 								fileName = df.format(new java.util.Date())  ; //+ ;
 								//plotting
 								//final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1)); //Yo
-								plot.Plot("Gráfico optimización Tabu Search", "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1));
+								plot.Plot("Gráfico optimización Algoritmo Híbrido", "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1));
 
 
 

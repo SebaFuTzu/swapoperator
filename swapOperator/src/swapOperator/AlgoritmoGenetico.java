@@ -38,6 +38,35 @@ public class AlgoritmoGenetico {
 	public static final int CRITERIO_PARADA_NUMERO_FIJO_GENERACIONES = 0;
 	public static final int CRITERIO_PARADA_ADAPTATIVO = 1;
 	
+	public static void reset() {
+		hijo=null;
+		solucionMutada=null;
+		solucionInicial=null;
+		padresCrossOver=null;
+		madresCrossOver=null;
+		costoSolucionInicial=0;
+		padresSeleccionados=null;
+		probabilidadSolucion=0;
+		mejorCostoIteracionAnterior=0;
+		mejorCostoIteracionActual=0;
+		mejorCostoHistorico=0;
+		mejorCostoHistoricoRestarts=0;
+		mejorSolucionHistorica=null;
+		mejorSolucionHistoricaRestarts=null;
+		fitnessPromedio=0;
+		memoriaMejoresSolucionesOrdenada=null;
+		poblacionActual=null;
+		nuevaPoblacion=null;
+		copiaPoblacionActual=null;
+		poblacionSalida=null;
+		sumaTotalCostosPoblacion=0;
+		random=null;
+		puntosCrossOver=null;
+		mejorSolucion=null;
+		cantidadSwappingsAG=0;
+		totalFitness=0;
+	}
+	
 	//Población inicial
 	public static void generarPoblacionInicial(int[] solucionSemillaInicial, int cantidadSwappings, int tamanoPoblacion, Swap swap, boolean incluirMemoriaPrevia) {
 		solucionInicial = solucionSemillaInicial.clone();//guardo la semilla para después (restarts)
@@ -379,6 +408,8 @@ public class AlgoritmoGenetico {
 		long totalTime = (endTime - startTime) / 1000000;
 		//System.out.println("tiempo ejecución: " + totalTime + " milisegundos");
 				
+		reset();
+		
 		return costos;//Fin
 	}
 }

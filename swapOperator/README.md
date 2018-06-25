@@ -57,3 +57,5 @@ Se agrega parametro con mejor optimo encontrado
 
 -path;./datos/;F64.txt;D64.txt;2;TABU;50;20;18;true;true;5;116
 
+-dataset ./dataset-TabuResearch.csv algoritmosGeneticos
+

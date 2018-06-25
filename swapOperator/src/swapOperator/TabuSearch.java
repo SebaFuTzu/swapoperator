@@ -33,6 +33,31 @@ public class TabuSearch {
 	static int valorMaximo;
 	static int posicionMaximo;
 	static int itemMaximo;
+	
+	public static void reset() {
+		listaTabu=null;
+		memoriaFrecuencias=null;
+		listaCandidatos=null;
+		memoriaMedianoPlazo=null;
+		listaItemsIntensificacion=null;
+		solucionActual=null;
+		valoresSwapped=null;
+		cantidadSwappings=0;
+		tamanoVecindad=0;
+		costoSolucionActual=0;
+		costoSolucionInicial=0;
+		prioridadEvaluacion=null;
+		mejorSolucion=null;
+		penalizacion=0;
+		costo=null;
+		mejorCostoHistorico=0;
+		copiaSolucionInicial=null;
+		mejoresVariablesIntensificacion=null;
+		mejoresValoresItemsIntensificacion=null;
+		valorMaximo=0;
+		posicionMaximo=0;
+		itemMaximo=0;
+	}
 
 	public static ArrayList<Double> TabuSearch(int[] solucionInicial, Swap swap, int duracionTabuList, int iteraciones, int profundidadIntensificacion, boolean intensificacion, boolean diversificacion) {
 		// definición de objetos y variables
@@ -152,6 +177,8 @@ public class TabuSearch {
 		long totalTime = (endTime - startTime) / 1000000;
 		//System.out.println("tiempo ejecución: " + totalTime + " milisegundos");
 
+		reset();
+		
 		return costos;
 	}
 
@@ -459,6 +486,10 @@ public class TabuSearch {
 		//long totalTime = (endTime - startTime) / 1000000;
 		//System.out.println("tiempo ejecución: " + totalTime + " milisegundos");
 
-		return solucionInicial.clone();
+		int[] salida = solucionInicial.clone();
+		
+		reset();
+		
+		return salida;
 	}
 }
