@@ -351,7 +351,7 @@ public class AlgoritmoGenetico {
 			/**if(mejorCostoHistorico==-1) {
 				mejorCostoHistorico = 0;
 			}*/
-			System.out.println("Generación "+contadorGeneraciones+" - Mejor costo: "+mejorCostoHistorico);
+			//System.out.println("Generación "+contadorGeneraciones+" - Mejor costo: "+mejorCostoHistorico);
 			
 			//evalúo si reemplazo la población actual por la nueva población
 			//poblacionActual = reemplazarPoblacionActualFitnessPromedio(copiaPoblacionActual, copiaNuevaPoblacion);
