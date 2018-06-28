@@ -31,7 +31,25 @@ public class Main {
 			DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 			DateFormat dfLog = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-			if(args[0].equalsIgnoreCase("-path")) {  // si parte con -path asume que realizaras una prueba unitaria
+			if(args[0].equalsIgnoreCase("-opti")) {
+				//Código para presentación optimización
+				//Sebastián Aliaga - Natalia Morales
+				path = args[1];
+				Fayudantia1 = args[2];
+				Dayudantia1 = Fayudantia1;
+				cantidadSwappings = Integer.parseInt(args[4]);
+
+				Stream<String> matrizF = Files.lines(Paths.get(path+Fayudantia1));
+				Stream<String> matrizD = Files.lines(Paths.get(path+Dayudantia1));
+				//filasD.forEach(System.out::println);
+				int[][] f = convertirString(matrizF);
+				int[][] d = convertirString(matrizD);
+				
+				Swap swap = new Swap(f, d);
+				int[] solucionInicial = swap.generarSolucionInicialTSP(swap.getMatrizD());
+				swap.toStringSolcuionInicial(solucionInicial);
+				
+			}else if(args[0].equalsIgnoreCase("-path")) {  // si parte con -path asume que realizaras una prueba unitaria
 				path = args[1];
 				Fayudantia1 = args[2];
 				Dayudantia1 = args[3];

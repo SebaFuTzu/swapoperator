@@ -13,6 +13,7 @@ public class Swap {
 	ArrayList<Integer> memoria;
 	int[] solucionSwapped;
 	double costo;
+	double distancia;
 
 	public Swap(int[][] matrizF, int[][] matrizD) {
 		this.matrizF = matrizF;
@@ -38,6 +39,19 @@ public class Swap {
 		int i = 0;
 		while (i < matriz.length) {
 			int indice = rnd.nextInt(matriz.length + 1);
+			if (!IntStream.of(solucion).anyMatch(x -> x == indice)) {
+				solucion[i] = indice;
+				i++;
+			}
+		}
+		return solucion;
+	}
+	
+	public int[] generarSolucionInicialTSP(int[][] matriz) {
+		int[] solucion = new int[matriz.length-1];
+		int i = 0;
+		while (i < matriz.length) {
+			int indice = rnd.nextInt(matriz.length + 1) + 1;
 			if (!IntStream.of(solucion).anyMatch(x -> x == indice)) {
 				solucion[i] = indice;
 				i++;
@@ -126,6 +140,24 @@ public class Swap {
 			e.printStackTrace();
 		}
 		return costo;
+	}
+	
+	public double evaluarCostoSolucionTSP(int[] solucionInicial) {
+		distancia = 0;
+		try {
+			for (int i = 0; i < matrizD.length; i++) {
+				if(i==0) {
+					distancia += matrizD[0][solucionInicial[i + 1] - 1];
+				}else if (i==(matrizD.length-1)) {
+					distancia += matrizD[solucionInicial[i] - 1][0];
+				}else {
+					distancia += matrizD[solucionInicial[i] - 1][solucionInicial[i + 1] - 1];
+				}				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return distancia;
 	}
 
 	public int[] calcularListaOrdenadaSumatoriaMatriz(int[][] matriz, boolean ascendente) {
