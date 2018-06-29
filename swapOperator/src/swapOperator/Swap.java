@@ -35,6 +35,22 @@ public class Swap {
 	}
 
 	public int[] generarSolcuionInicial(int[][] matriz) {
+		int[] solucion = new int[matriz.length-1];
+		int i = 0;
+		while (i < matriz.length-1) {
+			int indice = rnd.nextInt(matriz.length) + 1;
+			if(indice!=1) {
+				if (!IntStream.of(solucion).anyMatch(x -> x == indice)) {
+					solucion[i] = indice;
+					i++;
+				}
+			}
+		}
+		return solucion;
+	}
+	
+	/**
+	public int[] generarSolcuionInicial(int[][] matriz) {
 		int[] solucion = new int[matriz.length];
 		int i = 0;
 		while (i < matriz.length) {
@@ -46,15 +62,18 @@ public class Swap {
 		}
 		return solucion;
 	}
+	*/
 	
 	public int[] generarSolucionInicialTSP(int[][] matriz) {
 		int[] solucion = new int[matriz.length-1];
 		int i = 0;
-		while (i < matriz.length) {
-			int indice = rnd.nextInt(matriz.length + 1) + 1;
-			if (!IntStream.of(solucion).anyMatch(x -> x == indice)) {
-				solucion[i] = indice;
-				i++;
+		while (i < matriz.length-1) {
+			int indice = rnd.nextInt(matriz.length) + 1;
+			if(indice!=1) {
+				if (!IntStream.of(solucion).anyMatch(x -> x == indice)) {
+					solucion[i] = indice;
+					i++;
+				}
 			}
 		}
 		return solucion;
@@ -109,7 +128,7 @@ public class Swap {
 	}
 
 	public void toStringSolcuionInicial(int[] solucionInicial) {
-		//System.out.println("Solución inicial: " + Arrays.toString(solucionInicial));
+		System.out.println("Solución inicial: " + Arrays.toString(solucionInicial));
 		// System.out.println("A partir de matriz d:
 		// "+Arrays.toString(generarSolcuionInicial(matrizD)));
 	}
@@ -129,6 +148,26 @@ public class Swap {
 	}
 
 	public double evaluarCostoSolucion(int[] solucionInicial) {
+		distancia = 0;
+		//solucionInicial = new int[]{3,4,2};
+		//solucionInicial = new int[]{2, 3, 4};
+		try {
+			distancia += matrizD[0][solucionInicial[0] - 1];
+			for (int i = 0; i < solucionInicial.length; i++) {
+				if (i==(solucionInicial.length-1)) {
+					distancia += matrizD[solucionInicial[i] - 1][0];
+				}else {
+					distancia += matrizD[solucionInicial[i] - 1][solucionInicial[i + 1] - 1];
+				}				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return distancia;
+	}
+	
+	/**
+	public double evaluarCostoSolucion(int[] solucionInicial) {
 		costo = 0;
 		try {
 			for (int i = 0; i < matrizF.length; i++) {
@@ -141,14 +180,16 @@ public class Swap {
 		}
 		return costo;
 	}
+	*/
 	
-	public double evaluarCostoSolucionTSP(int[] solucionInicial) {
+	public double evaluarDistanciaSolucionTSP(int[] solucionInicial) {
 		distancia = 0;
+		//solucionInicial = new int[]{3,4,2};
+		//solucionInicial = new int[]{2, 3, 4};
 		try {
-			for (int i = 0; i < matrizD.length; i++) {
-				if(i==0) {
-					distancia += matrizD[0][solucionInicial[i + 1] - 1];
-				}else if (i==(matrizD.length-1)) {
+			distancia += matrizD[0][solucionInicial[0] - 1];
+			for (int i = 0; i < solucionInicial.length; i++) {
+				if (i==(solucionInicial.length-1)) {
 					distancia += matrizD[solucionInicial[i] - 1][0];
 				}else {
 					distancia += matrizD[solucionInicial[i] - 1][solucionInicial[i + 1] - 1];

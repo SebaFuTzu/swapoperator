@@ -24,8 +24,8 @@ public class Main {
 			//String Fayudantia1 = "F-ayudantia1.txt";
 			//String Dayudantia1 = "D-ayudantia1.txt";
 			int cantidadSwappings = 2;
-			String Fayudantia1 = "F64.txt";
-			String Dayudantia1 = "D64.txt";
+			String Fayudantia1 = "matrizDistancias29.txt";
+			String Dayudantia1 = "matrizDistancias29.txt";
 			String path = System.getProperty("user.dir")+"\\datos\\";
 
 			DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -34,10 +34,7 @@ public class Main {
 			if(args[0].equalsIgnoreCase("-opti")) {
 				//Código para presentación optimización
 				//Sebastián Aliaga - Natalia Morales
-				path = args[1];
-				Fayudantia1 = args[2];
-				Dayudantia1 = Fayudantia1;
-				cantidadSwappings = Integer.parseInt(args[4]);
+				cantidadSwappings = Integer.parseInt(args[1]);
 
 				Stream<String> matrizF = Files.lines(Paths.get(path+Fayudantia1));
 				Stream<String> matrizD = Files.lines(Paths.get(path+Dayudantia1));
@@ -48,6 +45,9 @@ public class Main {
 				Swap swap = new Swap(f, d);
 				int[] solucionInicial = swap.generarSolucionInicialTSP(swap.getMatrizD());
 				swap.toStringSolcuionInicial(solucionInicial);
+				
+				double distancia = swap.evaluarDistanciaSolucionTSP(solucionInicial);
+				System.out.println("Distancia solución inicial: "+distancia);
 				
 			}else if(args[0].equalsIgnoreCase("-path")) {  // si parte con -path asume que realizaras una prueba unitaria
 				path = args[1];

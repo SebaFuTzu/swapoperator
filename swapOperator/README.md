@@ -59,3 +59,5 @@ Se agrega parametro con mejor optimo encontrado
 
 -dataset ./dataset-TabuResearch.csv algoritmosGeneticos
 
+-dataset ./dataset-TrabajoOptimizacion.csv trabajoOptimizacion
+
