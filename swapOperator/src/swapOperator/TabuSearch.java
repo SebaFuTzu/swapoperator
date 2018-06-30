@@ -59,8 +59,9 @@ public class TabuSearch {
 		itemMaximo=0;
 	}
 
-	public static ArrayList<Double> TabuSearch(int[] solucionInicial, Swap swap, int duracionTabuList, int iteraciones, int profundidadIntensificacion, boolean intensificacion, boolean diversificacion) {
+	public static ArrayList<Double> TabuSearch(int[] solucionInicial, Swap swap, int duracionTabuList, int iteraciones, int profundidadIntensificacion, boolean intensificacion, boolean diversificacion, int iteracionesIntensificacion) {
 		// definición de objetos y variables
+		int totalIteraciones = iteraciones;
 		cantidadSwappings = 2;
 		valoresSwapped = new int[cantidadSwappings];
 		mejorCostoHistorico = 0;
@@ -155,7 +156,7 @@ public class TabuSearch {
 			
 			//etapa de intensificación
 			if(intensificacion) {
-				realizarIntensificacion(solucionInicial, profundidadIntensificacion, swap, costos, iteraciones, duracionTabuList, intensificacion, diversificacion);
+				realizarIntensificacion(solucionInicial, profundidadIntensificacion, swap, costos, iteracionesIntensificacion, duracionTabuList, intensificacion, diversificacion);
 			}
 			
 			costoSolucionInicial = swap.evaluarCostoSolucion(solucionInicial);
@@ -166,6 +167,8 @@ public class TabuSearch {
 			}
 			
 			iteraciones--;
+			
+			System.out.println("Costo iteración "+(totalIteraciones-iteraciones)+": "+costoSolucionInicial);
 		}
 		
 		//System.out.println("Mejor costo histórico encontrado: " + swap.evaluarCostoSolucion(solucionInicial));
@@ -290,6 +293,7 @@ public class TabuSearch {
 	}
 	
 	public static void buscarOptimoIntensificacion(int[] solucionInicial, Swap swap, ArrayList<Double> costos, int iteraciones, int duracionTabuList, boolean intensificacion, boolean diversificacion) {
+		int totalIteraciones = iteraciones;
 		costoSolucionInicial = swap.evaluarCostoSolucion(solucionInicial);
 		//costos.add(costoSolucionInicial);
 		
@@ -362,6 +366,8 @@ public class TabuSearch {
 			solucionInicial = swap.swapping(solucionInicial, valoresSwapped);
 			
 			iteraciones--;
+			
+			System.out.println("Costo iteración intensificación "+(totalIteraciones-iteraciones)+": "+swap.evaluarCostoSolucion(solucionInicial));
 		}
 	}
 	

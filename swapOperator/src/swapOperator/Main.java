@@ -154,6 +154,7 @@ public class Main {
 					int profundidadIntensificacion = 18;
 					boolean intensificacion = true;
 					boolean diversificacion = true;
+					int iteracionesIntensificacion = 500;
 
 					if ( args.length > 6)
 						duracionTabuList = Integer.parseInt(args[6]);
@@ -170,7 +171,7 @@ public class Main {
 					if ( args.length > 7)
 						diversificacion = Boolean.parseBoolean(args[10]);
 
-					ArrayList<Double> costos = TabuSearch.TabuSearch(solucionInicial, swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion);
+					ArrayList<Double> costos = TabuSearch.TabuSearch(solucionInicial, swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion, iteracionesIntensificacion);
 
 					//plotting
 					final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos, 6156, "costo"); //Yo
@@ -446,9 +447,10 @@ public class Main {
 							int profundidadIntensificacion = Integer.parseInt(fields[8]);
 							boolean intensificacion = Boolean.parseBoolean(fields[9]);
 							boolean diversificacion = Boolean.parseBoolean(fields[10]);
+							int iteracionesIntensificacion = Integer.parseInt(fields[11]);
 
-							cantidadExperimentos = Integer.parseInt(fields[11]);
-							mejorMaximoConocido = Integer.parseInt(fields[12]);
+							cantidadExperimentos = Integer.parseInt(fields[12]);
+							mejorMaximoConocido = Integer.parseInt(fields[13]);
 							//String fileName = df.format(new java.util.Date())  ; //+ ;
 
 							System.out.println(dfLog.format(new java.util.Date()) + " Linea de experimento [" + cantLines + "]");
@@ -464,7 +466,7 @@ public class Main {
 
 								swap.toStringSolcuionInicial(solucionInicial);
 
-								ArrayList<Double> costos = TabuSearch.TabuSearch(solucionInicial, swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion);
+								ArrayList<Double> costos = TabuSearch.TabuSearch(solucionInicial, swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion, iteracionesIntensificacion);
 
 								fileName = df.format(new java.util.Date())  ; //+ ;
 								//plotting
