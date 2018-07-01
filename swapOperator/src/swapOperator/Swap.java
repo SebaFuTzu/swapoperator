@@ -150,7 +150,7 @@ public class Swap {
 	public double evaluarCostoSolucion(int[] solucionInicial) {
 		distancia = 0;
 		//solucionInicial = new int[]{3,4,2};
-		//solucionInicial = new int[]{2, 3, 4};
+		//solucionInicial = new int[]{22,31,18,3,17,21,42,7,2,30,23,20,50,29,16,46,44,34,35,36,39,40,37,38,48,24,5,15,6,4,25,12,28,27,26,47,13,14,52,11,51,33,43,10,9,8,41,19,45,32,49};
 		try {
 			distancia += matrizD[0][solucionInicial[0] - 1];
 			for (int i = 0; i < solucionInicial.length; i++) {
@@ -186,6 +186,7 @@ public class Swap {
 		distancia = 0;
 		//solucionInicial = new int[]{3,4,2};
 		//solucionInicial = new int[]{2, 3, 4};
+		//solucionInicial = new int[]{22,31,18,3,17,21,42,7,2,30,23,20,50,29,16,46,44,34,35,36,39,40,37,38,48,24,5,15,6,4,25,12,28,27,26,47,13,14,52,11,51,33,43,10,9,8,41,19,45,32,49};
 		try {
 			distancia += matrizD[0][solucionInicial[0] - 1];
 			for (int i = 0; i < solucionInicial.length; i++) {

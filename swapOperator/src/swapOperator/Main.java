@@ -24,8 +24,8 @@ public class Main {
 			//String Fayudantia1 = "F-ayudantia1.txt";
 			//String Dayudantia1 = "D-ayudantia1.txt";
 			int cantidadSwappings = 2;
-			String Fayudantia1 = "matrizDistancias29.txt";
-			String Dayudantia1 = "matrizDistancias29.txt";
+			String Fayudantia1 = "matrizDistancias52.txt";
+			String Dayudantia1 = "matrizDistancias52.txt";
 			String path = System.getProperty("user.dir")+"\\datos\\";
 
 			DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -155,6 +155,7 @@ public class Main {
 					boolean intensificacion = true;
 					boolean diversificacion = true;
 					int iteracionesIntensificacion = 500;
+					int cantidadDiversificacion = 1;
 
 					if ( args.length > 6)
 						duracionTabuList = Integer.parseInt(args[6]);
@@ -170,8 +171,11 @@ public class Main {
 
 					if ( args.length > 7)
 						diversificacion = Boolean.parseBoolean(args[10]);
+					
+					if ( args.length > 7)
+						cantidadDiversificacion = Integer.parseInt(args[11]);
 
-					ArrayList<Double> costos = TabuSearch.TabuSearch(solucionInicial, swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion, iteracionesIntensificacion);
+					ArrayList<Double> costos = TabuSearch.TabuSearch(solucionInicial, swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion, iteracionesIntensificacion, cantidadDiversificacion);
 
 					//plotting
 					final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos, 6156, "costo"); //Yo
@@ -248,7 +252,8 @@ public class Main {
 					int iteraciones = 20;
 					int profundidadIntensificacion = 10;
 					boolean intensificacion = false;
-					boolean diversificacion = true;					
+					boolean diversificacion = true;		
+					int cantidadDiversificacion = 1;
 
 					if ( args.length > 6)
 						tamanoPoblacion = Integer.parseInt(args[6]);
@@ -294,9 +299,12 @@ public class Main {
 
 					if ( args.length > 7)
 						diversificacion = Boolean.parseBoolean(args[20]);
+					
+					if ( args.length > 7)
+						cantidadDiversificacion = Integer.parseInt(args[21]);
 
 
-					ArrayList<Double> costos = AlgoritmoHibrido.algoritmoHibrido(solucionInicial, cantidadSwappings, tamanoPoblacion, criterioParada, valorDetencion, swap, porcentajeCorteMenor, porcentajeCorteMayor, incluirMemoriaPrevia, numeroDeRestarts, porcentajeAGuardarMejoresSolucionesEnMemoria, ponderadorCantidadDePadres, maximoIteracionesAdaptativo, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion);
+					ArrayList<Double> costos = AlgoritmoHibrido.algoritmoHibrido(solucionInicial, cantidadSwappings, tamanoPoblacion, criterioParada, valorDetencion, swap, porcentajeCorteMenor, porcentajeCorteMayor, incluirMemoriaPrevia, numeroDeRestarts, porcentajeAGuardarMejoresSolucionesEnMemoria, ponderadorCantidadDePadres, maximoIteracionesAdaptativo, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion, cantidadDiversificacion);
 
 					//plotting
 					final XYPlotVista demo = new XYPlotVista("Gráfico optimización Algoritmos Genéticos", "Costo", costos); //Yo
@@ -448,9 +456,11 @@ public class Main {
 							boolean intensificacion = Boolean.parseBoolean(fields[9]);
 							boolean diversificacion = Boolean.parseBoolean(fields[10]);
 							int iteracionesIntensificacion = Integer.parseInt(fields[11]);
-
-							cantidadExperimentos = Integer.parseInt(fields[12]);
-							mejorMaximoConocido = Integer.parseInt(fields[13]);
+							int cantidadDiversificacion = Integer.parseInt(fields[12]);
+							
+							cantidadExperimentos = Integer.parseInt(fields[13]);
+							mejorMaximoConocido = Integer.parseInt(fields[14]);
+							String nombreInstancia = fields[15];
 							//String fileName = df.format(new java.util.Date())  ; //+ ;
 
 							System.out.println(dfLog.format(new java.util.Date()) + " Linea de experimento [" + cantLines + "]");
@@ -466,12 +476,12 @@ public class Main {
 
 								swap.toStringSolcuionInicial(solucionInicial);
 
-								ArrayList<Double> costos = TabuSearch.TabuSearch(solucionInicial, swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion, iteracionesIntensificacion);
+								ArrayList<Double> costos = TabuSearch.TabuSearch(solucionInicial, swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion, iteracionesIntensificacion, cantidadDiversificacion);
 
 								fileName = df.format(new java.util.Date())  ; //+ ;
 								//plotting
 								//final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1)); //Yo
-								plot.Plot("Gráfico optimización Tabu Search", "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1));
+								plot.Plot(nombreInstancia, "Distancia", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1));
 
 
 
@@ -594,7 +604,7 @@ public class Main {
 							int profundidadIntensificacion = 10;
 							boolean intensificacion = false;
 							boolean diversificacion = true;					
-
+							int cantidadDiversificacion = 1;
 
 							tamanoPoblacion = Integer.parseInt(fields[6]);
 
@@ -625,9 +635,11 @@ public class Main {
 							intensificacion = Boolean.parseBoolean(fields[19]);
 
 							diversificacion = Boolean.parseBoolean(fields[20]);
+							
+							cantidadDiversificacion = Integer.parseInt(fields[21]);
 
-							cantidadExperimentos = Integer.parseInt(fields[21]);
-							mejorMaximoConocido = Integer.parseInt(fields[22]);
+							cantidadExperimentos = Integer.parseInt(fields[22]);
+							mejorMaximoConocido = Integer.parseInt(fields[23]);
 
 							//ArrayList<Double> costos = AlgoritmoHibrido.algoritmoHibrido(solucionInicial, cantidadSwappings, tamanoPoblacion, criterioParada, valorDetencion, swap, porcentajeCorteMenor, porcentajeCorteMayor, incluirMemoriaPrevia, numeroDeRestarts, porcentajeAGuardarMejoresSolucionesEnMemoria, ponderadorCantidadDePadres, maximoIteracionesAdaptativo, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion);
 
@@ -651,7 +663,7 @@ public class Main {
 
 								swap.toStringSolcuionInicial(solucionInicial);
 
-								ArrayList<Double> costos = AlgoritmoHibrido.algoritmoHibrido(solucionInicial, cantidadSwappings, tamanoPoblacion, criterioParada, valorDetencion, swap, porcentajeCorteMenor, porcentajeCorteMayor, incluirMemoriaPrevia, numeroDeRestarts, porcentajeAGuardarMejoresSolucionesEnMemoria, ponderadorCantidadDePadres, maximoIteracionesAdaptativo, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion);
+								ArrayList<Double> costos = AlgoritmoHibrido.algoritmoHibrido(solucionInicial, cantidadSwappings, tamanoPoblacion, criterioParada, valorDetencion, swap, porcentajeCorteMenor, porcentajeCorteMayor, incluirMemoriaPrevia, numeroDeRestarts, porcentajeAGuardarMejoresSolucionesEnMemoria, ponderadorCantidadDePadres, maximoIteracionesAdaptativo, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion, cantidadDiversificacion);
 
 								//plotting
 								final XYPlotVista demo = new XYPlotVista("Gráfico optimización Algoritmos Genéticos", "Costo", costos); //Yo

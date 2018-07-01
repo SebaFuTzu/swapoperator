@@ -301,16 +301,16 @@ public class AlgoritmoHibrido {
 		return mejorCostoPoblacion;
 	}
 	
-	public static ArrayList<IndividuoAlgoritmoGenetico> realizarTabuSearchPoblacion(ArrayList<IndividuoAlgoritmoGenetico> nuevaPoblacion, Swap swap, int duracionTabuList, int iteraciones, int profundidadIntensificacion, boolean intensificacion, boolean diversificacion) {
+	public static ArrayList<IndividuoAlgoritmoGenetico> realizarTabuSearchPoblacion(ArrayList<IndividuoAlgoritmoGenetico> nuevaPoblacion, Swap swap, int duracionTabuList, int iteraciones, int profundidadIntensificacion, boolean intensificacion, boolean diversificacion, int cantidadDiversificacion) {
 		for(int i=0;i<nuevaPoblacion.size();i++) {
 			//System.out.println("Individuo de la población en Tabu search: "+i);
-			nuevaPoblacion.get(i).setSolucion(tabuSearchHibrido.TabuSearchHibrido(nuevaPoblacion.get(i).getSolucion(), swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion, i));
+			nuevaPoblacion.get(i).setSolucion(tabuSearchHibrido.TabuSearchHibrido(nuevaPoblacion.get(i).getSolucion(), swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion, i, cantidadDiversificacion));
 		}
 		return nuevaPoblacion;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static ArrayList<Double> algoritmoHibrido(int[] solucionSemillaInicial, int cantidadSwappings, int tamanoPoblacion, int criterioParada, int valorDetencion, Swap swap, double porcentajeCorteMenor, double porcentajeCorteMayor, boolean incluirMemoriaPrevia, int numeroDeRestarts, double porcentajeAGuardarMejoresSolucionesEnMemoria, double ponderadorCantidadDePadres, int maximoIteracionesAdaptativo, int duracionTabuList, int iteraciones, int profundidadIntensificacion, boolean intensificacion, boolean diversificacion) {
+	public static ArrayList<Double> algoritmoHibrido(int[] solucionSemillaInicial, int cantidadSwappings, int tamanoPoblacion, int criterioParada, int valorDetencion, Swap swap, double porcentajeCorteMenor, double porcentajeCorteMayor, boolean incluirMemoriaPrevia, int numeroDeRestarts, double porcentajeAGuardarMejoresSolucionesEnMemoria, double ponderadorCantidadDePadres, int maximoIteracionesAdaptativo, int duracionTabuList, int iteraciones, int profundidadIntensificacion, boolean intensificacion, boolean diversificacion, int iteracionesIntensificacion) {
 		ArrayList<Double> costos = new ArrayList<>();
 		cantidadSwappingsAG = cantidadSwappings;
 		int restarts = numeroDeRestarts;
@@ -340,7 +340,7 @@ public class AlgoritmoHibrido {
 			
 			//Inserto un Tabu Search para cada individuo de la nueva población, con el objetivo de mejorar fitness de la nueva población
 			copiaNuevaPoblacion = (ArrayList<IndividuoAlgoritmoGenetico>) nuevaPoblacion.clone();
-			nuevaPoblacion = realizarTabuSearchPoblacion(copiaNuevaPoblacion, swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion);
+			nuevaPoblacion = realizarTabuSearchPoblacion(copiaNuevaPoblacion, swap, duracionTabuList, iteraciones, profundidadIntensificacion, intensificacion, diversificacion, iteracionesIntensificacion);
 			
 			//Evalúo la nueva población
 			nuevaPoblacion = evaluarCostosDeCadaIndividuoDeLaPoblacion(nuevaPoblacion,swap);//retorno la nueva población con la evaluación de los costos de cada individuo

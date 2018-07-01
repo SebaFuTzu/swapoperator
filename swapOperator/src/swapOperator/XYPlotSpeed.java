@@ -3,10 +3,12 @@ package swapOperator;
 import java.io.File;
 import java.util.ArrayList;
 
+import org.jfree.chart.ChartColor;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -58,12 +60,13 @@ public class XYPlotSpeed {// extends ApplicationFrame {
 		double temp=0;
 		for(int i=0;i<costos.size();i++) {
 			temp = (costos.get(i)-bkv)/bkv;
-			series.add(i, temp);
+			series.add(i, temp*100);
 		}
 		// Create chart
 		final XYSeriesCollection data = new XYSeriesCollection(series);
-		final JFreeChart chart = ChartFactory.createXYLineChart(title, "Iteraciones", "Cercania al optimo", data,
+		final JFreeChart chart = ChartFactory.createXYLineChart(title, "Iteraciones", "Cercania al optimo (%)", data,
 				PlotOrientation.VERTICAL, true, true, false);
+		chart.getPlot().setBackgroundPaint(ChartColor.white);
 		//deshabilitado mostrar el grafico en ventana
 		//final ChartPanel chartPanel = new ChartPanel(chart);
 		//chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
@@ -72,7 +75,7 @@ public class XYPlotSpeed {// extends ApplicationFrame {
 		// Draw png
 		try {
 			//File archivo = new File(title+".png");
-			ChartUtilities.saveChartAsPNG(new File("img/"+fileName+".png"), chart, 1000, 540);
+			ChartUtilities.saveChartAsPNG(new File("img/"+fileName+".png"), chart, 400, 300);
 			//System.out.println("Guardado en:"+ archivo.getAbsolutePath());
 		} catch (Exception e) {
 			System.out.println("error guardar chart");
